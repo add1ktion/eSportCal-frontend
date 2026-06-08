@@ -1,1 +1,46 @@
 @import "tailwindcss";
+
+/* 
+  Global CSS Reset 
+  Forces the application to occupy 100% of the viewport with zero margins.
+*/
+html, body, #root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #090a15;
+}
+
+body {
+  @apply text-slate-50 antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 
+  ⚙️ PREMIUM CUSTOM SCROLLBARS 
+  Replaces the default ugly browser scrollbar with a sleek, thin gaming design.
+*/
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111226; /* Matches our containers */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #232549; /* Muted border color */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5c3be0; /* eSportCal purple accent on hover */
+}
