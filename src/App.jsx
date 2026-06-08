@@ -9,6 +9,17 @@ import UserSettings from './components/UserSettings';
 import AlertModal from './components/AlertModal';
 import AboutUsModal from './components/AboutUsModal';
 import ContactModal from './components/ContactModal';
+import FavoriteTeams from './components/FavoriteTeams';
+import MatchItem from './components/MatchItem';
+import MatchFilters from './components/MatchFilters';
+
+const GAME_SLUG_MAP = {
+  'cs-go': 'csgo',
+  'cs-2': 'csgo',
+  'league-of-legends': 'lol',
+  'valorant': 'valorant',
+  'dota-2': 'dota2'
+};
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,12 +29,14 @@ function App() {
   const [showContact, setShowContact] = useState(false);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState('All'); // 👈 State des filtres d'Ilan
 
   // 👤 User State
   const [user, setUser] = useState({
     username: 'Antoine_Bats',
     email: 'antoine@bats.com',
-    password: 'password123'
+    password: 'password123',
+    favoriteTeam: 'Karmine Corp'
   });
 
   // 🚨 Custom Alert Modal State
@@ -33,6 +46,14 @@ function App() {
     message: '',
     type: 'alert',
     onConfirm: null
+  });
+
+  // ⚙️ ACTIVE FILTERS STATE
+  const [activeFilters, setActiveFilters] = useState({
+    lol: ['LEC', 'LCK', 'LPL', 'LCS'],
+    valorant: ['VCT EMEA', 'VCT Americas', 'VCT Pacific', 'VCT CN'],
+    csgo: ['PGL', 'IEM', 'ESL', 'Blast'],
+    dota2: ['The International', 'Dream League', 'ESL One', 'PGL Wallachia']
   });
 
   useEffect(() => {
@@ -46,6 +67,39 @@ function App() {
         setLoading(false);
       });
   }, []);
+
+  // 🧹 FUZZY FILTER ALGORITHM + Ilan's "Live/Finished" Filters
+  const filteredMatches = matches.filter(match => {
+    // 1. Filter by Live/Finished/Upcoming (Ilan's Filter)
+    if (activeFilter === 'Upcoming' && match.status !== 'not_started') return false;
+    if (activeFilter === 'Finished' && match.status !== 'finished') return false;
+    if (activeFilter === 'Live' && match.status !== 'running') return false;
+
+    // 2. Filter by Sidebar Checkboxes
+    const gameId = GAME_SLUG_MAP[match.game_slug];
+    if (!gameId) return false;
+
+    const allowedLeagues = activeFilters[gameId] || [];
+    if (allowedLeagues.length === 0) return false;
+
+    return allowedLeagues.some(leagueAcronym => 
+      match.league_name.toUpperCase().includes(leagueAcronym.toUpperCase()) ||
+      match.serie_name.toUpperCase().includes(leagueAcronym.toUpperCase()) ||
+      match.stage_name?.toUpperCase().includes(leagueAcronym.toUpperCase())
+    );
+  });
+
+  // Filter matches for the favorite team feed
+  const favoriteMatches = matches.filter(match => 
+    match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()))
+  );
+
+  const handleFilterChange = (gameId, updatedLeagues) => {
+    setActiveFilters(prev => ({
+      ...prev,
+      [gameId]: updatedLeagues
+    }));
+  };
 
   const triggerAlert = (title, message, type = 'alert', onConfirm = null) => {
     setAlertState({
@@ -93,63 +147,57 @@ function App() {
       {/* 2. Main Section */}
       <div className="flex flex-col lg:flex-row gap-6 p-8 flex-grow w-full max-w-full">
         
-        {/* Sidebar */}
-        <SidebarFilter />
+        {/* Sidebar Filter */}
+        <SidebarFilter activeFilters={activeFilters} onFilterChange={handleFilterChange} />
 
-        {/* Matches Container */}
-        <main className="flex-1 bg-[#111226] border border-[#232549] rounded-3xl p-6 flex flex-col gap-4 shadow-xl">
+        {/* Dynamic vertical stack */}
+        <div className="flex-1 flex flex-col gap-6">
           
-          {/* Header of Matches Container */}
-          <div className="border-b border-[#232549] pb-4 flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-wide m-0">Matches</h1>
+          {/* 👥 Dynamic Favorite Teams Banner (Figma Logged In with Ilan's Design !) */}
+          {isLoggedIn && user.favoriteTeam && (
+            <FavoriteTeams 
+              favoriteMatches={favoriteMatches} 
+              favoriteTeamName={user.favoriteTeam} 
+            />
+          )}
+
+          {/* ==================== STANDARD MATCHES CONTAINER ==================== */}
+          <main className="bg-[#111226] border border-[#232549] rounded-3xl p-6 flex flex-col gap-4 shadow-xl">
             
-            {/* Filter buttons */}
-            <div className="flex gap-2 text-xs">
-              <button className="px-4 py-1.5 rounded-full bg-[#5c3be0] font-bold text-white cursor-pointer">All</button>
-              <button className="px-4 py-1.5 rounded-full bg-[#1c1d33] border border-[#232549] text-slate-400 font-bold hover:text-white transition cursor-pointer">Upcoming</button>
-              <button className="px-4 py-1.5 rounded-full bg-[#1c1d33] border border-[#232549] text-slate-400 font-bold hover:text-white transition cursor-pointer">Finished</button>
-              <button className="px-4 py-1.5 rounded-full bg-red-500 font-bold text-white animate-pulse cursor-pointer">Live</button>
+            {/* Header of Matches Container */}
+            <div className="border-b border-[#232549] pb-4 flex items-center justify-between">
+              <h1 className="text-3xl font-bold tracking-wide m-0">Matches</h1>
+              
+              {/* Filter buttons using Ilan's component */}
+              <MatchFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
             </div>
-          </div>
 
-          {/* Match Cards List */}
-          <div className="flex flex-col overflow-y-auto max-h-[600px] border border-[#232549]/50 rounded-2xl">
-            {loading ? (
-              <div className="p-8 text-center text-slate-400 font-semibold animate-pulse">
-                Loading e-sport matches...
-              </div>
-            ) : matches.length > 0 ? (
-              matches.map(match => (
-                // 🧹 INLINE PLACEHOLDER (Prevents Git conflicts with Ilan's branch !)
-                <div 
-                  key={match.id} 
-                  className="w-full border-b border-[#232549] py-4 px-6 flex items-center justify-between text-xs text-slate-300 bg-[#12132b]/30 hover:bg-[#161836]/40 transition"
-                >
-                  <div className="flex flex-col gap-1">
-                    <span className="font-bold text-slate-100 text-sm">{match.name}</span>
-                    <span className="text-slate-500">{match.league_name}</span>
-                  </div>
-                  <span className="font-black text-[#5c3be0] bg-[#5c3be0]/10 px-3 py-1 rounded-full uppercase text-[10px]">
-                    {match.game}
-                  </span>
+            {/* Match Cards List (Rendering Ilan's MatchItem dynamically !) */}
+            <div className="flex flex-col overflow-y-auto max-h-[500px] border border-[#232549]/50 rounded-2xl">
+              {loading ? (
+                <div className="p-8 text-center text-slate-400 font-semibold animate-pulse">
+                  Loading e-sport matches...
                 </div>
-              ))
-            ) : (
-              <div className="p-8 text-center text-slate-400 font-semibold">
-                No upcoming matches found.
-              </div>
-            )}
-          </div>
+              ) : filteredMatches.length > 0 ? (
+                filteredMatches.map(match => (
+                  <MatchItem key={match.id} match={match} />
+                ))
+              ) : (
+                <div className="p-8 text-center text-slate-400 font-semibold text-sm">
+                  No upcoming matches match your active filters.
+                </div>
+              )}
+            </div>
 
-        </main>
+          </main>
+        </div>
+
       </div>
 
       {/* 3. Footer */}
       <Footer onOpenAbout={() => setShowAbout(true)} onOpenContact={() => setShowContact(true)} />
 
-      {/* ==================== OVERLAY MODALS ==================== */}
-      
-      {/* Auth Modal */}
+      {/* OVERLAY MODALS */}
       {showAuthModal && (
         <AuthModal 
           onClose={() => setShowAuthModal(false)} 
