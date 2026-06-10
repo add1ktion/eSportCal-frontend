@@ -22,7 +22,6 @@ const FAQ_DATABASE = [
 ];
 
 function AboutUsModal({ onClose }) {
-  // Local state to manage which FAQ accordions are expanded
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
   const toggleFaq = (index) => {
@@ -34,9 +33,10 @@ function AboutUsModal({ onClose }) {
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto cursor-pointer"
     >
+      {/* Main modal container handles scrolling on small devices */}
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="bg-[#111226] border border-[#232549] rounded-3xl p-8 max-w-lg w-full shadow-2xl relative my-8 cursor-default"
+        className="bg-[#111226] border border-[#232549] rounded-3xl p-8 max-w-lg w-full shadow-2xl relative my-8 cursor-default max-h-[90vh] overflow-y-auto"
       >
         <button 
           onClick={onClose} 
@@ -55,11 +55,12 @@ function AboutUsModal({ onClose }) {
             </p>
           </div>
 
-          {/* ==================== FAQ SECTION (Interactive Accordion) ==================== */}
+          {/* ==================== FAQ SECTION ==================== */}
           <div className="flex flex-col gap-4">
             <h2 className="text-2xl font-bold text-center">Frequently Asked Questions</h2>
             
-            <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-2">
+            {/* Removed max-h-[300px] and overflow-y-auto to prevent inner clipping and double scrollbars */}
+            <div className="flex flex-col gap-3">
               {FAQ_DATABASE.map((faq, index) => {
                 const isOpen = openFaqIndex === index;
                 return (
@@ -78,7 +79,7 @@ function AboutUsModal({ onClose }) {
 
                     {/* Accordion Content */}
                     {isOpen && (
-                      <div className="px-4 pb-4 text-xs text-slate-400 leading-relaxed border-t border-[#232549]/50 pt-2 bg-[#111226]/50">
+                      <div className="px-5 pb-6 pt-3 text-xs text-slate-400 leading-relaxed border-t border-[#232549]/50 bg-[#111226]/50">
                         {faq.answer}
                       </div>
                     )}

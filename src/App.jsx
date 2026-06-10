@@ -1,16 +1,8 @@
 // frontend/src/App.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { 
-  startOfWeek, 
-  endOfWeek, 
-  addDays, 
-  subDays, 
-  isWithinInterval, 
-  format 
-} from 'date-fns'; // 👈 Imported date-fns helpers for weekly navigation!
 import Navbar from './components/Navbar';
-import SidebarFilter from './components/SideBarFilter';
+import SidebarFilter from './components/SidebarFilter';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import UserSettings from './components/UserSettings';
@@ -21,7 +13,6 @@ import FavoriteTeams from './components/FavoriteTeams';
 import MatchItem from './components/MatchItem';
 import MatchFilters from './components/MatchFilters';
 
-// Helper to map PandaScore game slugs/names to our sidebar game IDs (Defensive Dev)
 const GAME_SLUG_MAP = {
   'cs-go': 'csgo',
   'cs-2': 'csgo',
@@ -43,18 +34,12 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('Upcoming'); 
 
-  // 📅 DYNAMIC WEEKLY NAVIGATION STATES (US.V3 / Timezone & Calendar calibration)
-  const [currentWeekStart, setCurrentWeekStart] = useState(
-    startOfWeek(new Date(), { weekStartsOn: 1 }) // Defaults to Monday of current week
-  );
-  const currentWeekEnd = endOfWeek(currentWeekStart, { weekStartsOn: 1 }); // Sunday of current week
-
-  // 👤 User State
+  // 👤 User Profile State
   const [user, setUser] = useState({
-    username: 'Antoine_Bats',
-    email: 'antoine@bats.com',
-    password: 'password123',
-    favoriteTeam: 'Karmine Corp'
+    username: '',
+    email: '',
+    password: '',
+    favoriteTeam: ''
   });
 
   // 🚨 Custom Alert Modal State
@@ -66,7 +51,7 @@ function App() {
     onConfirm: null
   });
 
-  // ⚙️ ACTIVE FILTERS STATE (All checked by default)
+  // ⚙️ ACTIVE FILTERS STATE
   const [activeFilters, setActiveFilters] = useState({
     lol: ['LEC', 'LCK', 'LPL', 'LCS'],
     valorant: ['VCT EMEA', 'VCT Americas', 'VCT Pacific', 'VCT CN'],
@@ -75,7 +60,17 @@ function App() {
     r6: ['MENA League', 'NA League', 'SA League', 'CN League', 'AP League']
   });
 
+  // 🔄 PERSISTENCE CHECK ON STARTUP (Sprint 3)
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const savedUser = localStorage.getItem('user');
+    
+    if (token && savedUser) {
+      setUser(JSON.parse(savedUser));
+      setIsLoggedIn(true);
+    }
+
+    // Fetch matches from API
     axios.get('http://localhost:5001/api/matches')
       .then(res => {
         setMatches(res.data);
@@ -87,24 +82,12 @@ function App() {
       });
   }, []);
 
-  // 🧹 DYNAMIC REAL-TIME FILTER ALGORITHM (With weekly calendar window added!)
+  // Filter matches based on sidebar filters
   const filteredMatches = matches.filter(match => {
-    // 1. Filter by Live/Finished/Upcoming (Matches Tab Filter)
     if (activeFilter === 'Upcoming' && match.status !== 'not_started') return false;
     if (activeFilter === 'Finished' && match.status !== 'finished') return false;
     if (activeFilter === 'Live' && match.status !== 'running') return false;
 
-    // 2. Filter by Current Selected Week (Only applies to Upcoming and Finished, Live is always real-time!)
-    if (activeFilter !== 'Live') {
-      const matchDate = new Date(match.scheduled_at);
-      const isInWeek = isWithinInterval(matchDate, {
-        start: currentWeekStart,
-        end: currentWeekEnd
-      });
-      if (!isInWeek) return false;
-    }
-
-    // 3. Filter by Sidebar Checkboxes
     const rawGame = match.game_slug || match.game_name;
     const gameId = GAME_SLUG_MAP[rawGame?.toLowerCase()];
     if (!gameId) return false;
@@ -119,41 +102,13 @@ function App() {
     );
   });
 
-  // Filter matches for the favorite team feed (shows all matches of your team within the selected week)
-  const favoriteMatches = matches.filter(match => {
-    const isTeamMatch = match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()));
-    if (!isTeamMatch) return false;
-
-    // Apply weekly filter to favorites feed as well for perfect coherence!
-    const matchDate = new Date(match.scheduled_at);
-    return isWithinInterval(matchDate, { start: currentWeekStart, end: currentWeekEnd });
-  });
+  // Filter matches for the favorite team feed
+  const favoriteMatches = matches.filter(match => 
+    match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()))
+  );
 
   const handleFilterChange = (gameId, updatedLeagues) => {
-    setActiveFilters(prev => ({
-      ...prev,
-      [gameId]: updatedLeagues
-    }));
-  };
-
-  // Weekly Navigation Handlers
-  const handleNextWeek = () => {
-    setCurrentWeekStart(prev => addDays(prev, 7));
-  };
-
-  const handlePrevWeek = () => {
-    setCurrentWeekStart(prev => subDays(prev, 7));
-  };
-
-  const handleResetToCurrentWeek = () => {
-    setCurrentWeekStart(startOfWeek(new Date(), { weekStartsOn: 1 }));
-  };
-
-  // Format the range to display in the header bar (ex: "01 Jun - 07 Jun 2026")
-  const formatWeekRange = () => {
-    const startStr = format(currentWeekStart, 'dd MMM');
-    const endStr = format(currentWeekEnd, 'dd MMM yyyy');
-    return `${startStr} - ${endStr}`;
+    setActiveFilters(prev => ({ ...prev, [gameId]: updatedLeagues }));
   };
 
   const triggerAlert = (title, message, type = 'alert', onConfirm = null) => {
@@ -173,8 +128,21 @@ function App() {
     setAlertState(prev => ({ ...prev, isOpen: false }));
   };
 
+  // Handle successful login from AuthModal
+  const handleLoginSuccess = (userData, token) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    setIsLoggedIn(true);
+    setShowAuthModal(false);
+  };
+
+  // Handle Logout by clearing all local persistence
   const handleToggleLogin = () => {
     if (isLoggedIn) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser({ username: '', email: '', password: '', favoriteTeam: 'Karmine Corp' });
       setIsLoggedIn(false);
       setShowSettings(false);
       triggerAlert('Logged Out', 'You have been successfully disconnected from your account.', 'alert');
@@ -184,6 +152,9 @@ function App() {
   };
 
   const handleDeleteAccount = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser({ username: '', email: '', password: '', favoriteTeam: 'Karmine Corp' });
     setIsLoggedIn(false);
     setShowSettings(false);
     triggerAlert('Account Deleted', 'Your account and all associated data have been permanently removed.', 'alert');
@@ -192,22 +163,18 @@ function App() {
   return (
     <div className="min-h-screen bg-[#090a15] flex flex-col font-sans w-full overflow-x-hidden relative">
       
-      {/* 1. Header (Navbar) */}
+      {/* Navbar */}
       <Navbar 
         isLoggedIn={isLoggedIn} 
         onToggleLogin={handleToggleLogin} 
         onOpenSettings={() => setShowSettings(true)} 
       />
 
-      {/* 2. Main Section */}
+      {/* Main Container */}
       <div className="flex flex-col lg:flex-row gap-6 p-8 flex-grow w-full max-w-full">
-        
-        {/* Sidebar Filter */}
         <SidebarFilter activeFilters={activeFilters} onFilterChange={handleFilterChange} />
 
-        {/* Dynamic vertical stack */}
         <div className="flex-1 flex flex-col gap-6">
-          
           {/* Favorite Team Feed */}
           {isLoggedIn && user.favoriteTeam && (
             <FavoriteTeams 
@@ -218,41 +185,11 @@ function App() {
 
           {/* Standard Matches Container */}
           <main className="bg-[#111226] border border-[#232549] rounded-3xl p-6 flex flex-col gap-4 shadow-xl">
-            
-            {/* Header of Matches Container */}
             <div className="border-b border-[#232549] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h1 className="text-3xl font-bold tracking-wide m-0">Matches</h1>
-              
-              {/* 📅 Figma Style Weekly Navigation Bar */}
-              <div className="flex items-center gap-4 bg-[#1c1d33] border border-[#232549] px-4 py-1.5 rounded-2xl self-center sm:self-auto shadow-inner select-none">
-                <button 
-                  onClick={handlePrevWeek} 
-                  title="Previous Week"
-                  className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
-                >
-                  ◀
-                </button>
-                <span 
-                  onClick={handleResetToCurrentWeek}
-                  title="Reset to current week"
-                  className="text-xs font-bold text-slate-200 cursor-pointer hover:text-white"
-                >
-                  {formatWeekRange()}
-                </span>
-                <button 
-                  onClick={handleNextWeek} 
-                  title="Next Week"
-                  className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
-                >
-                  ▶
-                </button>
-              </div>
-
-              {/* Filter buttons */}
               <MatchFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
             </div>
 
-            {/* Match Cards List */}
             <div className="flex flex-col overflow-y-auto max-h-[500px] border border-[#232549]/50 rounded-2xl">
               {loading ? (
                 <div className="p-8 text-center text-slate-400 font-semibold animate-pulse">
@@ -264,28 +201,22 @@ function App() {
                 ))
               ) : (
                 <div className="p-8 text-center text-slate-400 font-semibold text-sm">
-                  No matches found for this week. Try changing the week or active filters.
+                  No matches found for this week.
                 </div>
               )}
             </div>
-
           </main>
         </div>
-
       </div>
 
-      {/* 3. Footer */}
       <Footer onOpenAbout={() => setShowAbout(true)} onOpenContact={() => setShowContact(true)} />
 
-      {/* OVERLAY MODALS */}
+      {/* Auth Modal */}
       {showAuthModal && (
         <AuthModal 
           onClose={() => setShowAuthModal(false)} 
-          onLogin={() => {
-            setIsLoggedIn(true);
-            setShowAuthModal(false);
-            triggerAlert('Welcome back!', `Logged in successfully as ${user.username}.`, 'alert');
-          }}
+          onLoginSuccess={handleLoginSuccess} // 👈 Passes our beautiful login success handler!
+          triggerAlert={triggerAlert}
         />
       )}
 
@@ -293,24 +224,23 @@ function App() {
       {showSettings && (
         <UserSettings 
           user={user}
-          onUpdateUser={(updatedUser) => setUser(updatedUser)}
+          onUpdateUser={(updatedUser) => {
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser)); // Persists profile updates!
+          }}
           onClose={() => setShowSettings(false)} 
           onDeleteAccount={handleDeleteAccount}
           triggerAlert={triggerAlert}
         />
       )}
 
-      {/* About Us & FAQ */}
-      {showAbout && (
-        <AboutUsModal onClose={() => setShowAbout(false)} />
-      )}
+      {/* About Us */}
+      {showAbout && <AboutUsModal onClose={() => setShowAbout(false)} />}
 
       {/* Contact Us */}
-      {showContact && (
-        <ContactModal onClose={() => setShowContact(false)} triggerAlert={triggerAlert} />
-      )}
+      {showContact && <ContactModal onClose={() => setShowContact(false)} triggerAlert={triggerAlert} />}
 
-      {/* Custom Reusable Alert / Confirm Modal */}
+      {/* Alert Modal */}
       <AlertModal 
         isOpen={alertState.isOpen}
         title={alertState.title}

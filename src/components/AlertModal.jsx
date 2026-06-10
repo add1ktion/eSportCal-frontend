@@ -48,7 +48,7 @@ function AlertModal({ isOpen, title, message, type, onConfirm, onCancel }) {
             </>
           ) : (
             <button
-              onClick={onCancel}
+              onClick={onConfirm || onCancel} // 👈 FIXED: Run the save callback (onConfirm) if it exists, otherwise just close!
               className="w-full bg-[#5c3be0] hover:bg-[#4d2db7] text-white py-2.5 rounded-xl text-xs font-bold transition active:scale-95 cursor-pointer"
             >
               OK

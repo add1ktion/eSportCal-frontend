@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
-// 🛡️ Your custom local team logos paths preserved!
 const FAVORITE_TEAMS_DATABASE = [
   { name: 'Karmine Corp', icon: '/logos/Teams/KC.png' },
   { name: 'Fnatic', icon: '/logos/Teams/Fnatic.png' },
@@ -20,23 +19,22 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
-  const [selectedFavorites, setSelectedFavorites] = useState(['Karmine Corp', 'Fnatic']);
+  
+  // 🎯 FIXED: Initialized dynamically with the logged-in user's actual favorite team! No more hardcoded array.
+  const [selectedFavorite, setSelectedFavorite] = useState(user.favoriteTeam || '');
 
-  const toggleFavorite = (teamName) => {
-    if (selectedFavorites.includes(teamName)) {
-      setSelectedFavorites(prev => prev.filter(name => name !== teamName));
-    } else {
-      setSelectedFavorites(prev => [...prev, teamName]);
-    }
+  const handleSelectTeam = (teamName) => {
+    // Enforces single-selection: clicking already selected team unchecks it, otherwise select new
+    setSelectedFavorite(selectedFavorite === teamName ? '' : teamName);
   };
 
   const handleApplyChanges = () => {
     triggerAlert(
       'Apply Changes', 
-      'All your profile modifications and favorite teams have been successfully applied!', 
+      'All your profile modifications and favorite team have been successfully applied!', 
       'alert',
       () => {
-        onUpdateUser({ username, email, password });
+        onUpdateUser({ ...user, username, email, password, favoriteTeam: selectedFavorite });
         onClose();
       }
     );
@@ -56,13 +54,11 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
       onClick={onClose} 
       className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto cursor-pointer"
     >
-      {/* Dashboard Card */}
       <div 
         onClick={(e) => e.stopPropagation()} 
         className="bg-[#111226] border border-[#232549] rounded-3xl p-8 max-w-2xl w-full shadow-2xl relative my-8 cursor-default"
       >
         
-        {/* Close Button */}
         <button 
           onClick={onClose} 
           className="absolute top-4 right-4 text-slate-400 hover:text-white transition cursor-pointer"
@@ -71,7 +67,7 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
         </button>
 
         <div className="flex flex-col gap-6">
-          {/* ==================== USER SETTINGS SECTION ==================== */}
+          {/* USER SETTINGS */}
           <div className="flex flex-col gap-4 border-b border-[#232549] pb-6">
             <h2 className="text-3xl font-bold text-center">User Settings</h2>
             
@@ -123,17 +119,17 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
             </div>
           </div>
 
-          {/* ==================== FAVORITE TEAMS GRID ==================== */}
+          {/* FAVORITE TEAMS (Strict Single-Selection) */}
           <div className="flex flex-col gap-4">
             <h2 className="text-2xl font-bold text-center">Favorite Teams</h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 max-h-[250px] overflow-y-auto pr-2">
               {FAVORITE_TEAMS_DATABASE.map((team) => {
-                const isSelected = selectedFavorites.includes(team.name);
+                const isSelected = selectedFavorite === team.name; // 🎯 Strictly matches the single selected team!
                 return (
                   <div 
                     key={team.name}
-                    onClick={() => toggleFavorite(team.name)}
+                    onClick={() => handleSelectTeam(team.name)}
                     className={`p-3 rounded-2xl flex flex-col items-center gap-2 border cursor-pointer transition ${
                       isSelected 
                         ? 'bg-[#5c3be0] border-[#7351f5]' 

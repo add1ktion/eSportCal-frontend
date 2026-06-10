@@ -1,21 +1,97 @@
 // frontend/src/components/AuthModal.jsx
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { X } from 'lucide-react';
 
-function AuthModal({ onClose, onLogin }) {
-  const handleSubmit = (e) => {
+function AuthModal({ onClose, onLoginSuccess, triggerAlert }) {
+  // 1. Log In States
+  const [loginIdentifier, setLoginIdentifier] = useState(''); // Can be username or email
+  const [loginPassword, setLoginPassword] = useState('');
+
+  // 2. Sign In (Register) States
+  const [registerUsername, setRegisterUsername] = useState('');
+  const [registerEmail, setRegisterEmail] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  // 3. Local Error State to display validation errors inside the modal
+  const [error, setError] = useState(null);
+
+  // Handle User Log In Submit
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    onLogin(); // Simulates successful login
+    setError(null);
+
+    // 🛠️ TEST
+    if (loginIdentifier === 'admin' && loginPassword === 'admin') {
+      const mockUser = {
+        username: 'Test',
+        email: 'admin@esportcal.com',
+        password: 'admin',
+        favoriteTeam: 'Karmine Corp'
+      };
+      const mockToken = 'mock_jwt_token_for_local_testing_purposes';
+      
+      onLoginSuccess(mockUser, mockToken);
+      triggerAlert('Welcome back!', `Logged in successfully as ${mockUser.username} (Dev Mode).`, 'alert');
+      return; // Stops here, no API call made!
+    }
+
+    // ==================== REAL API CALL ====================
+    try {
+      // Calls Ilan's backend endpoint!
+      const response = await axios.post('http://localhost:5001/api/auth/login', {
+        identifier: loginIdentifier,
+        password: loginPassword
+      });
+
+      // If successful, pass the user data and JWT token to App.jsx
+      const { token, user } = response.data;
+      onLoginSuccess(user, token);
+
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(err.response?.data?.error || 'Invalid credentials. Please try again.');
+    }
+  };
+
+  // Handle User Registration Submit
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    // Security Check: Verify passwords match before hitting the API
+    if (registerPassword !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    try {
+      // Calls Ilan's backend endpoint!
+      const response = await axios.post('http://localhost:5001/api/auth/register', {
+        username: registerUsername,
+        email: registerEmail,
+        password: registerPassword
+      });
+
+      const { token, user } = response.data;
+      onLoginSuccess(user, token);
+      triggerAlert('Account Created!', `Welcome to eSportCal, ${user.username}!`, 'alert');
+
+    } catch (err) {
+      console.error('Registration error:', err);
+      setError(err.response?.data?.error || 'Failed to create account.');
+    }
   };
 
   return (
     <div 
-      onClick={onClose} // Clicking the blurred backdrop closes the modal
+      onClick={onClose} 
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md cursor-pointer"
     >
       {/* Modal Container */}
       <div 
-        onClick={(e) => e.stopPropagation()} // Prevents modal from closing when clicking inside
+        onClick={(e) => e.stopPropagation()} 
         className="bg-[#111226] border border-[#232549] rounded-3xl p-8 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto cursor-default"
       >
         
@@ -27,9 +103,16 @@ function AuthModal({ onClose, onLogin }) {
           <X size={20} />
         </button>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
+          {/* Display Error Message if any */}
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl p-3 text-xs font-bold text-center animate-pulse">
+              ⚠️ {error}
+            </div>
+          )}
+
           {/* ==================== LOG IN SECTION ==================== */}
-          <div className="flex flex-col gap-4">
+          <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
             <h2 className="text-2xl font-bold text-center border-b border-[#232549] pb-2">
               Log In
             </h2>
@@ -40,6 +123,8 @@ function AuthModal({ onClose, onLogin }) {
                 <input 
                   type="text" 
                   placeholder="Enter username or email" 
+                  value={loginIdentifier}
+                  onChange={(e) => setLoginIdentifier(e.target.value)}
                   className="bg-[#c0c2d6] text-[#090a15] placeholder-slate-500 rounded-lg px-3 py-1 text-xs w-48 outline-none font-semibold"
                   required
                 />
@@ -50,6 +135,8 @@ function AuthModal({ onClose, onLogin }) {
                 <input 
                   type="password" 
                   placeholder="Enter your password" 
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
                   className="bg-[#c0c2d6] text-[#090a15] placeholder-slate-500 rounded-lg px-3 py-1 text-xs w-48 outline-none font-semibold"
                   required
                 />
@@ -62,10 +149,10 @@ function AuthModal({ onClose, onLogin }) {
             >
               Log In
             </button>
-          </div>
+          </form>
 
-          {/* ==================== SIGN IN SECTION ==================== */}
-          <div className="flex flex-col gap-4 border-t border-[#232549] pt-6">
+          {/* ==================== SIGN IN (REGISTER) SECTION ==================== */}
+          <form onSubmit={handleRegisterSubmit} className="flex flex-col gap-4 border-t border-[#232549] pt-6">
             <h2 className="text-2xl font-bold text-center border-b border-[#232549] pb-2">
               Sign In
             </h2>
@@ -76,6 +163,8 @@ function AuthModal({ onClose, onLogin }) {
                 <input 
                   type="text" 
                   placeholder="Enter your username" 
+                  value={registerUsername}
+                  onChange={(e) => setRegisterUsername(e.target.value)}
                   className="bg-[#c0c2d6] text-[#090a15] placeholder-slate-500 rounded-lg px-3 py-1 text-xs w-48 outline-none font-semibold"
                   required
                 />
@@ -86,6 +175,8 @@ function AuthModal({ onClose, onLogin }) {
                 <input 
                   type="email" 
                   placeholder="Enter your email" 
+                  value={registerEmail}
+                  onChange={(e) => setRegisterEmail(e.target.value)}
                   className="bg-[#c0c2d6] text-[#090a15] placeholder-slate-500 rounded-lg px-3 py-1 text-xs w-48 outline-none font-semibold"
                   required
                 />
@@ -96,6 +187,8 @@ function AuthModal({ onClose, onLogin }) {
                 <input 
                   type="password" 
                   placeholder="Enter your password" 
+                  value={registerPassword}
+                  onChange={(e) => setRegisterPassword(e.target.value)}
                   className="bg-[#c0c2d6] text-[#090a15] placeholder-slate-500 rounded-lg px-3 py-1 text-xs w-48 outline-none font-semibold"
                   required
                 />
@@ -106,6 +199,8 @@ function AuthModal({ onClose, onLogin }) {
                 <input 
                   type="password" 
                   placeholder="Confirm your password" 
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="bg-[#c0c2d6] text-[#090a15] placeholder-slate-500 rounded-lg px-3 py-1 text-xs w-48 outline-none font-semibold"
                   required
                 />
@@ -113,14 +208,13 @@ function AuthModal({ onClose, onLogin }) {
             </div>
 
             <button 
-              type="button"
-              onClick={onLogin}
+              type="submit"
               className="w-full bg-[#c0c2d6] hover:bg-white text-[#090a15] py-2 rounded-xl font-bold text-sm transition cursor-pointer mt-2"
             >
               Sign Up
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
 
       </div>
     </div>
