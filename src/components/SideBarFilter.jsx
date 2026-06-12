@@ -50,13 +50,13 @@ const GAMES_DATABASE = [
   {
     id: 'r6',
     name: 'Rainbow 6 Siege',
-    icon: '/logos/Rainbow 6 Siege/R6.png',
+    icon: '/logos/R6/R6.png',
     leagues: [
-      { name: 'MENA League', icon: '/logos/Rainbow 6 Siege/EM_League.png' },
-      { name: 'NA League', icon: '/logos/Rainbow 6 Siege/NA_League.png' },
-      { name: 'SA League', icon: '/logos/Rainbow 6 Siege/SA_League.png' },
-      { name: 'CN League', icon: '/logos/Rainbow 6 Siege/CN_League.png' },
-      { name: 'AP League', icon: '/logos/Rainbow 6 Siege/AP_League.png' }
+      { name: 'MENA League', icon: '/logos/R6/MENA_League.png' },
+      { name: 'NA League', icon: '/logos/R6/NA_League.png' },
+      { name: 'SA League', icon: '/logos/R6/SA_League.png' },
+      { name: 'CN League', icon: '/logos/R6/CN_League.png' },
+      { name: 'AP League', icon: '/logos/R6/AP_League.png' }
     ]
   }
 ];
@@ -115,6 +115,7 @@ function SidebarFilter({ activeFilters, onFilterChange }) {
         Games
       </h2>
 
+      {/* Safety padding-right left as is for custom scrollbar */}
       <div className="flex flex-col gap-4 max-h-[500px] overflow-y-auto pr-3">
         {GAMES_DATABASE.map((game) => {
           const selectedLeagues = activeFilters[game.id] || [];
@@ -169,10 +170,6 @@ function SidebarFilter({ activeFilters, onFilterChange }) {
           );
         })}
       </div>
-
-      <button className="w-full bg-[#27ae60] hover:bg-[#2ecc71] text-white py-3 rounded-2xl font-bold tracking-wide shadow-md transition-all active:scale-95 mt-2 cursor-pointer">
-        Apply Filters
-      </button>
     </aside>
   );
 }

@@ -1,5 +1,5 @@
 // frontend/src/components/UserSettings.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X } from 'lucide-react';
 
 const FAVORITE_TEAMS_DATABASE = [
@@ -20,11 +20,10 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
   
-  // 🎯 FIXED: Initialized dynamically with the logged-in user's actual favorite team! No more hardcoded array.
+  // Single selection state initialized with the user's favorite team
   const [selectedFavorite, setSelectedFavorite] = useState(user.favoriteTeam || '');
 
   const handleSelectTeam = (teamName) => {
-    // Enforces single-selection: clicking already selected team unchecks it, otherwise select new
     setSelectedFavorite(selectedFavorite === teamName ? '' : teamName);
   };
 
@@ -40,15 +39,6 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
     );
   };
 
-  const handleDeleteClick = () => {
-    triggerAlert(
-      'Delete Account',
-      'Are you sure you want to permanently delete your account (GDPR)? This action cannot be undone.',
-      'confirm',
-      () => onDeleteAccount()
-    );
-  };
-
   return (
     <div 
       onClick={onClose} 
@@ -58,7 +48,6 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
         onClick={(e) => e.stopPropagation()} 
         className="bg-[#111226] border border-[#232549] rounded-3xl p-8 max-w-2xl w-full shadow-2xl relative my-8 cursor-default"
       >
-        
         <button 
           onClick={onClose} 
           className="absolute top-4 right-4 text-slate-400 hover:text-white transition cursor-pointer"
@@ -111,7 +100,7 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
                 Apply Changes
               </button>
               <button 
-                onClick={handleDeleteClick}
+                onClick={onDeleteAccount}
                 className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl font-bold text-xs transition cursor-pointer"
               >
                 Delete Account
@@ -119,13 +108,13 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
             </div>
           </div>
 
-          {/* FAVORITE TEAMS (Strict Single-Selection) */}
+          {/* FAVORITE TEAMS (Cleaned up selection with NO checkboxes) */}
           <div className="flex flex-col gap-4">
             <h2 className="text-2xl font-bold text-center">Favorite Teams</h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 max-h-[250px] overflow-y-auto pr-2">
               {FAVORITE_TEAMS_DATABASE.map((team) => {
-                const isSelected = selectedFavorite === team.name; // 🎯 Strictly matches the single selected team!
+                const isSelected = selectedFavorite === team.name;
                 return (
                   <div 
                     key={team.name}
@@ -137,17 +126,12 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
                     }`}
                   >
                     {team.icon ? (
-                      <img src={team.icon} alt={team.name} className="w-8 h-8 object-contain" />
+                      <img src={team.icon} alt={team.name} className="w-8 h-8 object-contain select-none" />
                     ) : (
                       <div className="w-8 h-8 bg-[#232549] rounded-full flex items-center justify-center font-bold">?</div>
                     )}
-                    <span className="text-[10px] font-bold text-center tracking-wide truncate w-full">{team.name}</span>
-                    <input 
-                      type="checkbox" 
-                      checked={isSelected}
-                      readOnly
-                      className="w-3 h-3 rounded accent-white cursor-pointer"
-                    />
+                    <span className="text-[10px] font-bold text-center tracking-wide truncate w-full select-none">{team.name}</span>
+                    {/* Checkbox removed for cleaner card-only active design ! */}
                   </div>
                 );
               })}

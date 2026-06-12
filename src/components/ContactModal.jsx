@@ -1,5 +1,6 @@
 // frontend/src/components/ContactModal.jsx
 import React, { useState } from 'react';
+import axios from 'axios';
 import { X } from 'lucide-react';
 
 function ContactModal({ onClose, triggerAlert }) {
@@ -7,16 +8,38 @@ function ContactModal({ onClose, triggerAlert }) {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
-    // Uses the customized Alert instead of browser's alert()
-    triggerAlert(
-      'Message Sent!',
-      `Thank you ${name}, your message has been successfully delivered. Our DevOps bot will reply shortly!`,
-      'alert',
-      () => onClose()
-    );
+    setSending(true);
+
+    try {
+      // Calls our secure backend proxy mail sender!
+      await axios.post('http://localhost:5001/api/contact', {
+        name,
+        email,
+        subject,
+        message
+      });
+
+      setSending(false);
+      triggerAlert(
+        'Message Sent!',
+        `Thank you ${name}, your email has been successfully delivered. Our team will get back to you shortly!`,
+        'alert',
+        () => onClose()
+      );
+
+    } catch (err) {
+      console.error('Mail sending error:', err);
+      setSending(false);
+      triggerAlert(
+        'Sending Failed',
+        'Unable to send your message. Please verify your email server configuration or try again later.',
+        'alert'
+      );
+    }
   };
 
   return (
@@ -92,9 +115,12 @@ function ContactModal({ onClose, triggerAlert }) {
 
           <button 
             type="submit" 
-            className="w-full bg-[#27ae60] hover:bg-[#2ecc71] text-white py-2.5 rounded-xl font-bold text-sm tracking-wide shadow-md transition-all active:scale-95 cursor-pointer mt-1"
+            disabled={sending}
+            className={`w-full bg-[#27ae60] hover:bg-[#2ecc71] text-white py-2.5 rounded-xl font-bold text-sm tracking-wide shadow-md transition-all active:scale-95 mt-1 cursor-pointer ${
+              sending ? 'opacity-50 cursor-not-allowed animate-pulse' : ''
+            }`}
           >
-            Send Message
+            {sending ? 'Sending Message...' : 'Send Message'}
           </button>
         </form>
 
