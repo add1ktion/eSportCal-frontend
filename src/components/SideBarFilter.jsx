@@ -50,13 +50,13 @@ const GAMES_DATABASE = [
   {
     id: 'r6',
     name: 'Rainbow 6 Siege',
-    icon: '/logos/R6/R6.png',
+    icon: '/logos/Rainbow 6 Siege/R6.png',
     leagues: [
-      { name: 'MENA League', icon: '/logos/R6/MENA_League.png' },
-      { name: 'NA League', icon: '/logos/R6/NA_League.png' },
-      { name: 'SA League', icon: '/logos/R6/SA_League.png' },
-      { name: 'CN League', icon: '/logos/R6/CN_League.png' },
-      { name: 'AP League', icon: '/logos/R6/AP_League.png' }
+      { name: 'MENA League', icon: '/logos/Rainbow 6 Siege/MENA_League.png' },
+      { name: 'NA League', icon: '/logos/Rainbow 6 Siege/NA_League.png' },
+      { name: 'SA League', icon: '/logos/Rainbow 6 Siege/SA_League.png' },
+      { name: 'CN League', icon: '/logos/Rainbow 6 Siege/CN_League.png' },
+      { name: 'AP League', icon: '/logos/Rainbow 6 Siege/AP_League.png' }
     ]
   }
 ];
