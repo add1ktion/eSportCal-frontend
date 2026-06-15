@@ -9,8 +9,8 @@ import {
   isWithinInterval, 
   format 
 } from 'date-fns';
-import Navbar from './components/NavBar'; // Preserved your capital 'B'
-import SidebarFilter from './components/SideBarFilter'; // Preserved your capital 'B' and 'F'
+import Navbar from './components/NavBar'; // Preserved capital 'B'
+import SidebarFilter from './components/SideBarFilter'; // Preserved capitals
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import UserSettings from './components/UserSettings';
@@ -21,7 +21,7 @@ import FavoriteTeams from './components/FavoriteTeams';
 import MatchItem from './components/MatchItem';
 import MatchFilters from './components/MatchFilters';
 
-// Helper to map PandaScore game slugs/names to our sidebar game IDs (Defensive Dev)
+// Helper to map PandaScore game slugs/names to our sidebar game IDs
 const GAME_SLUG_MAP = {
   'cs-go': 'csgo',
   'cs-2': 'csgo',
@@ -76,7 +76,7 @@ function App() {
     username: '',
     email: '',
     password: '',
-    favoriteTeam: '' // Defaults to empty, will be loaded from DB!
+    favoriteTeam: ''
   });
 
   // 🚨 Custom Alert Modal State
@@ -97,6 +97,18 @@ function App() {
     r6: ['MENA League', 'NA League', 'SA League', 'CN League', 'AP League']
   });
 
+  // ⚙️ UX AUTO-SWITCH EFFECT: Automatically toggles between Finished/Upcoming based on selected week
+  useEffect(() => {
+    const today = new Date();
+    const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
+
+    if (currentWeekStart < startOfThisWeek) {
+      setActiveFilter('Finished'); // Week in the past -> show finished matches
+    } else {
+      setActiveFilter('Upcoming'); // Week in the future/present -> show upcoming matches
+    }
+  }, [currentWeekStart]); // Triggers every time you click next/prev week!
+
   // Fetch user favorites directly from PostgreSQL!
   const fetchUserFavorites = async (token, currentUser) => {
     try {
@@ -105,7 +117,6 @@ function App() {
       });
       const dbFavorites = res.data.favorites;
       if (dbFavorites && dbFavorites.length > 0) {
-        // Get the first saved favorite team from the DB
         const savedTeamId = dbFavorites[0].pandascore_team_id;
         const savedTeamName = FAVORITE_TEAMS_MAP[savedTeamId] || 'Karmine Corp';
         
@@ -121,7 +132,7 @@ function App() {
     }
   };
 
-  // 🔄 PERSISTENCE CHECK ON STARTUP (Sprint 3)
+  // 🔄 PERSISTENCE CHECK ON STARTUP
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
@@ -130,7 +141,7 @@ function App() {
       const parsedUser = JSON.parse(savedUser);
       setUser(parsedUser);
       setIsLoggedIn(true);
-      fetchUserFavorites(token, parsedUser); // Loads favorites from Postgres!
+      fetchUserFavorites(token, parsedUser);
     }
 
     // Fetch matches from local Postgres cache
@@ -236,7 +247,7 @@ function App() {
     setUser(userData);
     setIsLoggedIn(true);
     setShowAuthModal(false);
-    fetchUserFavorites(token, userData); // Loads favorites on login!
+    fetchUserFavorites(token, userData);
   };
 
   // Handle Logout
@@ -289,9 +300,37 @@ function App() {
           <main className="bg-[#111226] border border-[#232549] rounded-3xl p-6 flex flex-col gap-4 shadow-xl">
             <div className="border-b border-[#232549] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h1 className="text-3xl font-bold tracking-wide m-0">Matches</h1>
+              
+              {/* 📅 Figma Style Weekly Navigation Bar */}
+              <div className="flex items-center gap-4 bg-[#1c1d33] border border-[#232549] px-4 py-1.5 rounded-2xl self-center sm:self-auto shadow-inner select-none">
+                <button 
+                  onClick={handlePrevWeek} 
+                  title="Previous Week"
+                  className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
+                >
+                  ◀
+                </button>
+                <span 
+                  onClick={handleResetToCurrentWeek}
+                  title="Reset to current week"
+                  className="text-xs font-bold text-slate-200 cursor-pointer hover:text-white"
+                >
+                  {formatWeekRange()}
+                </span>
+                <button 
+                  onClick={handleNextWeek} 
+                  title="Next Week"
+                  className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
+                >
+                  ▶
+                </button>
+              </div>
+
+              {/* Filter buttons */}
               <MatchFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
             </div>
 
+            {/* Match Cards List */}
             <div className="flex flex-col overflow-y-auto max-h-[500px] border border-[#232549]/50 rounded-2xl">
               {loading ? (
                 <div className="p-8 text-center text-slate-400 font-semibold animate-pulse">
