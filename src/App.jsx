@@ -33,6 +33,19 @@ const GAME_SLUG_MAP = {
   'rainbow-six-siege': 'r6'
 };
 
+const FAVORITE_TEAMS_MAP = {
+  128268: 'Karmine Corp',
+  3201: 'Fnatic',
+  3210: 'G2 Esports',
+  136005: 'GiantX',
+  137078: 'MKOI',
+  3214: 'Natus Vincere',
+  138612: 'Shifters',
+  3212: 'SK Gaming',
+  132212: 'Team Heretics',
+  3213: 'Vitality'
+};
+
 // ⚙️ DEFINITIVE MAJOR LEAGUES DATABASE (Used for precise filtering)
 const MAJOR_LEAGUES = {
   lol: ['LEC', 'LCK', 'LPL', 'LCS'],
@@ -63,7 +76,7 @@ function App() {
     username: '',
     email: '',
     password: '',
-    favoriteTeam: 'Karmine Corp'
+    favoriteTeam: '' // Defaults to empty, will be loaded from DB!
   });
 
   // 🚨 Custom Alert Modal State
@@ -84,17 +97,43 @@ function App() {
     r6: ['MENA League', 'NA League', 'SA League', 'CN League', 'AP League']
   });
 
+  // Fetch user favorites directly from PostgreSQL!
+  const fetchUserFavorites = async (token, currentUser) => {
+    try {
+      const res = await axios.get('http://localhost:5001/api/user/favorites', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const dbFavorites = res.data.favorites;
+      if (dbFavorites && dbFavorites.length > 0) {
+        // Get the first saved favorite team from the DB
+        const savedTeamId = dbFavorites[0].pandascore_team_id;
+        const savedTeamName = FAVORITE_TEAMS_MAP[savedTeamId] || 'Karmine Corp';
+        
+        setUser(prev => ({
+          ...prev,
+          username: currentUser.username,
+          email: currentUser.email,
+          favoriteTeam: savedTeamName
+        }));
+      }
+    } catch (err) {
+      console.error('Error fetching favorites from DB:', err);
+    }
+  };
+
   // 🔄 PERSISTENCE CHECK ON STARTUP (Sprint 3)
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
     
     if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser);
       setIsLoggedIn(true);
+      fetchUserFavorites(token, parsedUser); // Loads favorites from Postgres!
     }
 
-    // Fetch matches from API
+    // Fetch matches from local Postgres cache
     axios.get('http://localhost:5001/api/matches')
       .then(res => {
         setMatches(res.data);
@@ -106,14 +145,12 @@ function App() {
       });
   }, []);
 
-  // 🧹 SMART INTELLIGENT FILTER ALGORITHM
+  // Filter matches based on sidebar filters
   const filteredMatches = matches.filter(match => {
-    // 1. Filter by Live/Finished/Upcoming (Matches Tab Filter)
     if (activeFilter === 'Upcoming' && match.status !== 'not_started') return false;
     if (activeFilter === 'Finished' && match.status !== 'finished') return false;
     if (activeFilter === 'Live' && match.status !== 'running') return false;
 
-    // 2. Filter by Current Selected Week (Applies to Upcoming and Finished, Live is real-time!)
     if (activeFilter !== 'Live') {
       const matchDate = new Date(match.scheduled_at);
       const isInWeek = isWithinInterval(matchDate, {
@@ -123,34 +160,28 @@ function App() {
       if (!isInWeek) return false;
     }
 
-    // 3. Filter by Sidebar Checkboxes
     const rawGame = match.game_slug || match.game_name;
     const gameId = GAME_SLUG_MAP[rawGame?.toLowerCase()];
     if (!gameId) return false;
 
     const allowedFilters = activeFilters[gameId] || [];
-    if (allowedFilters.length === 0) return false; // Game completely unchecked -> hide
+    if (allowedFilters.length === 0) return false;
 
-    // Compile all match text metadata to perform a fuzzy check
     const matchText = `${match.league_name} ${match.serie_name} ${match.stage_name || ''}`.toUpperCase();
     const gameMajorLeagues = MAJOR_LEAGUES[gameId] || [];
 
-    // Find if this match belongs to a major league listed in our sidebar
     const matchedMajorLeague = gameMajorLeagues.find(acronym => 
       matchText.includes(acronym.toUpperCase())
     );
 
     if (matchedMajorLeague) {
-      // It belongs to a major league! Only show it if the user has it explicitly checked
       return allowedFilters.includes(matchedMajorLeague);
     }
 
-    // It belongs to a minor league (not listed in sidebar).
-    // We show it by default as long as the parent game is checked!
     return true;
   });
 
-  // Filter matches for the favorite team feed (shows all matches of your team within the selected week)
+  // Filter matches for the favorite team feed
   const favoriteMatches = matches.filter(match => {
     const isTeamMatch = match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()));
     if (!isTeamMatch) return false;
@@ -160,10 +191,7 @@ function App() {
   });
 
   const handleFilterChange = (gameId, updatedLeagues) => {
-    setActiveFilters(prev => ({
-      ...prev,
-      [gameId]: updatedLeagues
-    }));
+    setActiveFilters(prev => ({ ...prev, [gameId]: updatedLeagues }));
   };
 
   const handleNextWeek = () => {
@@ -201,20 +229,22 @@ function App() {
     setAlertState(prev => ({ ...prev, isOpen: false }));
   };
 
-  // Handle successful login from AuthModal (Sprint 3)
+  // Handle successful login
   const handleLoginSuccess = (userData, token) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
     setIsLoggedIn(true);
     setShowAuthModal(false);
+    fetchUserFavorites(token, userData); // Loads favorites on login!
   };
 
+  // Handle Logout
   const handleToggleLogin = () => {
     if (isLoggedIn) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      setUser({ username: '', email: '', password: '', favoriteTeam: 'Karmine Corp' });
+      setUser({ username: '', email: '', password: '', favoriteTeam: '' });
       setIsLoggedIn(false);
       setShowSettings(false);
       triggerAlert('Logged Out', 'You have been successfully disconnected from your account.', 'alert');
@@ -226,7 +256,7 @@ function App() {
   const handleDeleteAccount = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    setUser({ username: '', email: '', password: '', favoriteTeam: 'Karmine Corp' });
+    setUser({ username: '', email: '', password: '', favoriteTeam: '' });
     setIsLoggedIn(false);
     setShowSettings(false);
     triggerAlert('Account Deleted', 'Your account and all associated data have been permanently removed.', 'alert');
@@ -235,22 +265,18 @@ function App() {
   return (
     <div className="min-h-screen bg-[#090a15] flex flex-col font-sans w-full overflow-x-hidden relative">
       
-      {/* 1. Header (Navbar) */}
+      {/* Header */}
       <Navbar 
         isLoggedIn={isLoggedIn} 
         onToggleLogin={handleToggleLogin} 
         onOpenSettings={() => setShowSettings(true)} 
       />
 
-      {/* 2. Main Section */}
+      {/* Main Container */}
       <div className="flex flex-col lg:flex-row gap-6 p-8 flex-grow w-full max-w-full">
-        
-        {/* Sidebar Filter */}
         <SidebarFilter activeFilters={activeFilters} onFilterChange={handleFilterChange} />
 
-        {/* Dynamic vertical stack */}
         <div className="flex-1 flex flex-col gap-6">
-          
           {/* Favorite Team Feed */}
           {isLoggedIn && user.favoriteTeam && (
             <FavoriteTeams 
@@ -261,41 +287,11 @@ function App() {
 
           {/* Standard Matches Container */}
           <main className="bg-[#111226] border border-[#232549] rounded-3xl p-6 flex flex-col gap-4 shadow-xl">
-            
-            {/* Header of Matches Container */}
             <div className="border-b border-[#232549] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h1 className="text-3xl font-bold tracking-wide m-0">Matches</h1>
-              
-              {/* 📅 Figma Style Weekly Navigation Bar */}
-              <div className="flex items-center gap-4 bg-[#1c1d33] border border-[#232549] px-4 py-1.5 rounded-2xl self-center sm:self-auto shadow-inner select-none">
-                <button 
-                  onClick={handlePrevWeek} 
-                  title="Previous Week"
-                  className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
-                >
-                  ◀
-                </button>
-                <span 
-                  onClick={handleResetToCurrentWeek}
-                  title="Reset to current week"
-                  className="text-xs font-bold text-slate-200 cursor-pointer hover:text-white"
-                >
-                  {formatWeekRange()}
-                </span>
-                <button 
-                  onClick={handleNextWeek} 
-                  title="Next Week"
-                  className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
-                >
-                  ▶
-                </button>
-              </div>
-
-              {/* Filter buttons */}
               <MatchFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
             </div>
 
-            {/* Match Cards List */}
             <div className="flex flex-col overflow-y-auto max-h-[500px] border border-[#232549]/50 rounded-2xl">
               {loading ? (
                 <div className="p-8 text-center text-slate-400 font-semibold animate-pulse">
@@ -307,24 +303,21 @@ function App() {
                 ))
               ) : (
                 <div className="p-8 text-center text-slate-400 font-semibold text-sm">
-                  No matches found for this week. Try changing the week or active filters.
+                  No matches found for this week.
                 </div>
               )}
             </div>
-
           </main>
         </div>
-
       </div>
 
-      {/* 3. Footer */}
       <Footer onOpenAbout={() => setShowAbout(true)} onOpenContact={() => setShowContact(true)} />
 
-      {/* OVERLAY MODALS */}
+      {/* Auth Modal */}
       {showAuthModal && (
         <AuthModal 
           onClose={() => setShowAuthModal(false)} 
-          onLoginSuccess={handleLoginSuccess} // 👈 FIXED: We pass the real login success handler!
+          onLoginSuccess={handleLoginSuccess}
           triggerAlert={triggerAlert}
         />
       )}
@@ -335,7 +328,7 @@ function App() {
           user={user}
           onUpdateUser={(updatedUser) => {
             setUser(updatedUser);
-            localStorage.setItem('user', JSON.stringify(updatedUser)); // Persists profile updates!
+            localStorage.setItem('user', JSON.stringify(updatedUser));
           }}
           onClose={() => setShowSettings(false)} 
           onDeleteAccount={handleDeleteAccount}
@@ -343,17 +336,13 @@ function App() {
         />
       )}
 
-      {/* About Us & FAQ */}
-      {showAbout && (
-        <AboutUsModal onClose={() => setShowAbout(false)} />
-      )}
+      {/* About Us */}
+      {showAbout && <AboutUsModal onClose={() => setShowAbout(false)} />}
 
       {/* Contact Us */}
-      {showContact && (
-        <ContactModal onClose={() => setShowContact(false)} triggerAlert={triggerAlert} />
-      )}
+      {showContact && <ContactModal onClose={() => setShowContact(false)} triggerAlert={triggerAlert} />}
 
-      {/* Custom Reusable Alert / Confirm Modal */}
+      {/* Alert Modal */}
       <AlertModal 
         isOpen={alertState.isOpen}
         title={alertState.title}

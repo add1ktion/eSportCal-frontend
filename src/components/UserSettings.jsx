@@ -1,41 +1,70 @@
 // frontend/src/components/UserSettings.jsx
 import React, { useState } from 'react';
+import axios from 'axios';
 import { X } from 'lucide-react';
 
+// 🛡️ High-quality local team metadata with official PandaScore IDs!
 const FAVORITE_TEAMS_DATABASE = [
-  { name: 'Karmine Corp', icon: '/logos/Teams/KC.png' },
-  { name: 'Fnatic', icon: '/logos/Teams/Fnatic.png' },
-  { name: 'G2 Esports', icon: '/logos/Teams/G2.png' },
-  { name: 'GiantX', icon: '/logos/Teams/GiantX.png' },
-  { name: 'MKOI', icon: '/logos/Teams/MKOI.png' },
-  { name: 'Natus Vincere', icon: '/logos/Teams/Natus_Vincere.png' },
-  { name: 'Shifters', icon: '/logos/Teams/Shifters.png' },
-  { name: 'SK Gaming', icon: '/logos/Teams/SK_Gaming.png' },
-  { name: 'Team Heretics', icon: '/logos/Teams/Team_Heretics.png' },
-  { name: 'Team Vitality', icon: '/logos/Teams/Vitality.png' }
+  { name: 'Karmine Corp', icon: '/logos/Teams/KC.png', pandascore_id: 128268 },
+  { name: 'Fnatic', icon: '/logos/Teams/Fnatic.png', pandascore_id: 3201 },
+  { name: 'G2 Esports', icon: '/logos/Teams/G2.png', pandascore_id: 3210 },
+  { name: 'GiantX', icon: '/logos/Teams/GiantX.png', pandascore_id: 136005 },
+  { name: 'MKOI', icon: '/logos/Teams/MKOI.png', pandascore_id: 137078 },
+  { name: 'Natus Vincere', icon: '/logos/Teams/Natus_Vincere.png', pandascore_id: 3214 },
+  { name: 'Shifters', icon: '/logos/Teams/Shifters.png', pandascore_id: 138612 },
+  { name: 'SK Gaming', icon: '/logos/Teams/SK_Gaming.png', pandascore_id: 3212 },
+  { name: 'Team Heretics', icon: '/logos/Teams/Team_Heretics.png', pandascore_id: 132212 },
+  { name: 'Team Vitality', icon: '/logos/Teams/Vitality.png', pandascore_id: 3213 }
 ];
 
 function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAlert }) {
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
-  
-  // Single selection state initialized with the user's favorite team
   const [selectedFavorite, setSelectedFavorite] = useState(user.favoriteTeam || '');
 
   const handleSelectTeam = (teamName) => {
     setSelectedFavorite(selectedFavorite === teamName ? '' : teamName);
   };
 
-  const handleApplyChanges = () => {
-    triggerAlert(
-      'Apply Changes', 
-      'All your profile modifications and favorite team have been successfully applied!', 
-      'alert',
-      () => {
-        onUpdateUser({ ...user, username, email, password, favoriteTeam: selectedFavorite });
-        onClose();
+  const handleApplyChanges = async () => {
+    const selectedTeamObj = FAVORITE_TEAMS_DATABASE.find(t => t.name === selectedFavorite);
+    const token = localStorage.getItem('token');
+
+    try {
+      // 🐘 DATABASE PERSISTENCE: Save favorite team to PostgreSQL via Ilan's API!
+      if (selectedTeamObj && token) {
+        // First, clear old favorites (since we only allow ONE favorite team for the MVP)
+        // Then, insert the new one
+        await axios.post(
+          'http://localhost:5001/api/user/favorites',
+          { pandascore_team_id: selectedTeamObj.pandascore_id },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
       }
+
+      triggerAlert(
+        'Apply Changes', 
+        'All your profile modifications and favorite team have been successfully saved in our Database!', 
+        'alert',
+        () => {
+          onUpdateUser({ ...user, username, email, password, favoriteTeam: selectedFavorite });
+          onClose();
+        }
+      );
+
+    } catch (err) {
+      console.error('Error saving favorite team in DB:', err);
+      triggerAlert('Error', 'Failed to save your favorite team in the database.', 'alert');
+    }
+  };
+
+  const handleDeleteClick = () => {
+    triggerAlert(
+      'Delete Account',
+      'Are you sure you want to permanently delete your account (GDPR)? This action cannot be undone.',
+      'confirm',
+      () => onDeleteAccount()
     );
   };
 
@@ -100,7 +129,7 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
                 Apply Changes
               </button>
               <button 
-                onClick={onDeleteAccount}
+                onClick={handleDeleteClick}
                 className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl font-bold text-xs transition cursor-pointer"
               >
                 Delete Account
@@ -108,7 +137,7 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
             </div>
           </div>
 
-          {/* FAVORITE TEAMS (Cleaned up selection with NO checkboxes) */}
+          {/* FAVORITE TEAMS */}
           <div className="flex flex-col gap-4">
             <h2 className="text-2xl font-bold text-center">Favorite Teams</h2>
 
@@ -131,7 +160,6 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
                       <div className="w-8 h-8 bg-[#232549] rounded-full flex items-center justify-center font-bold">?</div>
                     )}
                     <span className="text-[10px] font-bold text-center tracking-wide truncate w-full select-none">{team.name}</span>
-                    {/* Checkbox removed for cleaner card-only active design ! */}
                   </div>
                 );
               })}
