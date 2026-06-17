@@ -192,13 +192,9 @@ function App() {
     return true;
   });
 
-  // Filter matches for the favorite team feed
+  // Filter matches for the favorite team feed (not bound to the selected week)
   const favoriteMatches = matches.filter(match => {
-    const isTeamMatch = match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()));
-    if (!isTeamMatch) return false;
-
-    const matchDate = new Date(match.scheduled_at);
-    return isWithinInterval(matchDate, { start: currentWeekStart, end: currentWeekEnd });
+    return match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()));
   });
 
   const handleFilterChange = (gameId, updatedLeagues) => {
