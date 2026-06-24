@@ -260,13 +260,24 @@ function App() {
     }
   };
 
-  const handleDeleteAccount = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser({ username: '', email: '', password: '', favoriteTeam: '' });
-    setIsLoggedIn(false);
-    setShowSettings(false);
-    triggerAlert('Account Deleted', 'Your account and all associated data have been permanently removed.', 'alert');
+  const handleDeleteAccount = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      if (token) {
+        await axios.delete('http://localhost:5001/api/user/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser({ username: '', email: '', password: '', favoriteTeam: '' });
+      setIsLoggedIn(false);
+      setShowSettings(false);
+      triggerAlert('Account Deleted', 'Your account and all associated data have been permanently removed.', 'alert');
+    } catch (err) {
+      console.error('Error deleting account from DB:', err);
+      triggerAlert('Error', 'Failed to delete your account from the database.', 'alert');
+    }
   };
 
   return (

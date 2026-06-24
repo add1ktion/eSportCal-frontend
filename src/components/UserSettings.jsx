@@ -32,6 +32,28 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
     const token = localStorage.getItem('token');
 
     try {
+      // 🐘 DATABASE PERSISTENCE: Save profile updates (username, email, password) to PostgreSQL!
+      if (token) {
+        const updateData = {};
+        if (username !== user.username) updateData.username = username;
+        if (email !== user.email) updateData.email = email;
+        // Only update password if it's filled and different
+        if (password !== user.password && password !== '') updateData.password = password;
+
+        if (Object.keys(updateData).length > 0) {
+          const res = await axios.put(
+            'http://localhost:5001/api/user/me',
+            updateData,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          
+          // If the username has changed, a new token is returned
+          if (res.data.token) {
+            localStorage.setItem('token', res.data.token);
+          }
+        }
+      }
+
       // 🐘 DATABASE PERSISTENCE: Save favorite team to PostgreSQL via Ilan's API!
       if (selectedTeamObj && token) {
         // First, clear old favorites (since we only allow ONE favorite team for the MVP)
@@ -54,8 +76,9 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
       );
 
     } catch (err) {
-      console.error('Error saving favorite team in DB:', err);
-      triggerAlert('Error', 'Failed to save your favorite team in the database.', 'alert');
+      console.error('Error saving profile changes or favorite team in DB:', err);
+      const errMsg = err.response?.data?.error || 'Failed to save your changes in the database.';
+      triggerAlert('Error', errMsg, 'alert');
     }
   };
 
