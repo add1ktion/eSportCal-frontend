@@ -78,7 +78,7 @@ const FavoriteTeams = ({ favoriteMatches, favoriteTeamName }) => {
         className={`flex flex-col border border-[#232549]/50 rounded-2xl overflow-y-auto scrollbar-thin transition-all duration-300 ${
           expandedMatchId 
             ? 'max-h-none' 
-            : 'max-h-[148px]'
+            : 'max-h-[165px]'
         }`}
       >
         {sortedFavMatches.length > 0 ? (
