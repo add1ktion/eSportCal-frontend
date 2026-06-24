@@ -64,12 +64,18 @@ function App() {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('Upcoming'); 
+  const [expandedMatchId, setExpandedMatchId] = useState(null);
 
   // 📅 DYNAMIC WEEKLY NAVIGATION STATES
   const [currentWeekStart, setCurrentWeekStart] = useState(
     startOfWeek(new Date(), { weekStartsOn: 1 })
   );
   const currentWeekEnd = endOfWeek(currentWeekStart, { weekStartsOn: 1 });
+
+  // Reset expanded match when week or filter changes
+  useEffect(() => {
+    setExpandedMatchId(null);
+  }, [currentWeekStart, activeFilter]);
 
   // 👤 User State
   const [user, setUser] = useState({
@@ -338,14 +344,19 @@ function App() {
             </div>
 
             {/* Match Cards List */}
-            <div className="flex flex-col overflow-y-auto max-h-[500px] border border-[#232549]/50 rounded-2xl">
+            <div className="flex flex-col border border-[#232549]/50 rounded-2xl">
               {loading ? (
                 <div className="p-8 text-center text-slate-400 font-semibold animate-pulse">
                   Loading e-sport matches...
                 </div>
               ) : filteredMatches.length > 0 ? (
                 filteredMatches.map(match => (
-                  <MatchItem key={match.id} match={match} />
+                  <MatchItem 
+                    key={match.id} 
+                    match={match} 
+                    isExpanded={expandedMatchId === match.id}
+                    onToggleExpand={() => setExpandedMatchId(expandedMatchId === match.id ? null : match.id)}
+                  />
                 ))
               ) : (
                 <div className="p-8 text-center text-slate-400 font-semibold text-sm">
