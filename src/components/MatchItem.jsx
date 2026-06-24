@@ -92,6 +92,7 @@ const MatchItem = ({ match }) => {
   const [teamAPlayers, setTeamAPlayers] = useState([]);
   const [teamBPlayers, setTeamBPlayers] = useState([]);
   const [loadingRoster, setLoadingRoster] = useState(false);
+  const [revealScore, setRevealScore] = useState(false);
 
   const formatDate = (isoString) => {
     const date = new Date(isoString);
@@ -197,8 +198,34 @@ const MatchItem = ({ match }) => {
 
         {/* VS Block & Time */}
         <div className="flex flex-col items-center justify-center">
-          <span className="font-black text-sm text-slate-200">{formatTime(match.scheduled_at)}</span>
-          <span className="text-xs text-gray-500 font-black my-0.5">VS</span>
+          <span className="font-black text-sm text-slate-200">
+            {match.status === 'running' ? (
+              <span className="text-red-500 animate-pulse font-extrabold uppercase tracking-widest text-[9px]">● Live</span>
+            ) : formatTime(match.scheduled_at)}
+          </span>
+          
+          {(match.status === 'finished' || match.status === 'running') ? (
+            <div className="my-1 flex items-center justify-center min-h-[22px]">
+              {revealScore ? (
+                <span className="font-extrabold text-xs text-[#2ecc71] bg-[#2ecc71]/10 px-2 py-0.5 rounded border border-[#2ecc71]/20 tracking-wider">
+                  {teamA.score} - {teamB.score}
+                </span>
+              ) : (
+                <span 
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent card expansion
+                    setRevealScore(true);
+                  }}
+                  title="Click to show score (anti-spoiler)"
+                  className="bg-[#232549] hover:bg-[#2d305e] text-slate-400 hover:text-slate-200 border border-[#232549] text-[8px] font-black px-1.5 py-0.5 rounded cursor-pointer transition select-none uppercase tracking-wider animate-pulse"
+                >
+                  Show Score
+                </span>
+              )}
+            </div>
+          ) : (
+            <span className="text-xs text-gray-500 font-black my-0.5">VS</span>
+          )}
           <div className="w-4 h-2 bg-slate-600 rounded-b-md"></div>
         </div>
 
