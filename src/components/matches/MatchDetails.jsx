@@ -101,12 +101,13 @@ const MatchDetails = ({ match }) => {
       {/* A. Stream Embed Area */}
       <div className="w-full max-w-4xl mx-auto">
         {twitchChannel ? (
-          <iframe
-            src={`https://player.twitch.tv/?channel=${twitchChannel}&parent=localhost&parent=127.0.0.1`}
-            allowFullScreen
-            className="w-full aspect-video rounded-2xl border border-[#232549] shadow-2xl h-auto"
-            style={{ aspectRatio: '16/9' }}
-          />
+          <div className="relative w-full overflow-hidden rounded-2xl border border-[#232549] shadow-2xl" style={{ paddingTop: '56.25%' }}>
+            <iframe
+              src={`https://player.twitch.tv/?channel=${twitchChannel}&parent=localhost&parent=127.0.0.1`}
+              allowFullScreen
+              className="absolute top-0 left-0 w-full h-full border-0"
+            />
+          </div>
         ) : match.stream_url ? (
           <div className="bg-[#181933] border border-[#232549] p-6 rounded-2xl text-center shadow-lg">
             <p className="text-slate-300 mb-3 text-sm">Direct video stream available at external link :</p>
