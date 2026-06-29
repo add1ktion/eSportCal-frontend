@@ -1,7 +1,7 @@
 // frontend/src/components/MatchDetails.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getPlayerImage, getRoleIcon, translateRole } from './helpers';
+import { getPlayerImage, getRoleIcon, translateRole } from '../../utils/helpers';
 
 // Map coordinates for player headshots on Map_v2.png (absolute positioning)
 const mapPositions = {

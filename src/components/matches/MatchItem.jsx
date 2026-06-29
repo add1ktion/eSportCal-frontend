@@ -1,7 +1,7 @@
 // frontend/src/components/MatchItem.jsx
 import React, { useState } from 'react';
 import MatchDetails from './MatchDetails';
-import { getTeamLogo, getGameLogo } from './helpers';
+import { getTeamLogo, getGameLogo } from '../../utils/helpers';
 
 const MatchItem = ({ match, isExpanded, onToggleExpand }) => {
   const [showScore, setShowScore] = useState(false);

@@ -9,17 +9,17 @@ import {
   isWithinInterval, 
   format 
 } from 'date-fns';
-import Navbar from './components/NavBar'; // Preserved capital 'B'
-import SidebarFilter from './components/SideBarFilter'; // Preserved capitals
-import Footer from './components/Footer';
-import AuthModal from './components/AuthModal';
-import UserSettings from './components/UserSettings';
-import AlertModal from './components/AlertModal';
-import AboutUsModal from './components/AboutUsModal';
-import ContactModal from './components/ContactModal';
-import FavoriteTeams from './components/FavoriteTeams';
-import MatchItem from './components/MatchItem';
-import MatchFilters from './components/MatchFilters';
+import Navbar from './components/layout/NavBar';
+import SidebarFilter from './components/layout/SideBarFilter';
+import Footer from './components/layout/Footer';
+import AuthModal from './components/auth/AuthModal';
+import UserSettings from './components/auth/UserSettings';
+import AlertModal from './components/common/AlertModal';
+import AboutUsModal from './components/common/AboutUsModal';
+import ContactModal from './components/common/ContactModal';
+import FavoriteTeams from './components/matches/FavoriteTeams';
+import MatchItem from './components/matches/MatchItem';
+import MatchFilters from './components/matches/MatchFilters';
 
 // Helper to map PandaScore game slugs/names to our sidebar game IDs
 const GAME_SLUG_MAP = {
