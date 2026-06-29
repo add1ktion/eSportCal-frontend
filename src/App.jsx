@@ -207,6 +207,26 @@ function App() {
     const gameMajorLeagues = MAJOR_LEAGUES[gameId] || [];
 
     const matchedMajorLeague = gameMajorLeagues.find(acronym => {
+      const u = acronym.toUpperCase();
+      if (gameId === 'lol') {
+        if (u === 'MSI') {
+          return matchText.includes('MID-SEASON INVITATIONAL') || matchText.includes('MSI');
+        }
+        if (u === 'WORLDS') {
+          return matchText.includes('WORLD CHAMPIONSHIP') || matchText.includes('WORLDS');
+        }
+      }
+      if (gameId === 'valorant') {
+        if (u === 'VCT CN') {
+          return (matchText.includes('CHINA') || matchText.includes('CN')) && matchText.includes('VCT');
+        }
+        if (u === 'VALORANT CHAMPIONS') {
+          return matchText.includes('CHAMPIONS') || matchText.includes('VALORANT CHAMPIONS');
+        }
+        if (u === 'VCT MASTERS') {
+          return matchText.includes('MASTERS') || matchText.includes('VCT MASTERS');
+        }
+      }
       if (gameId === 'r6') {
         if (acronym === 'NA League') {
           return matchText.includes('NORTH AMERICA LEAGUE') || matchText.includes('NA LEAGUE');
@@ -218,7 +238,7 @@ function App() {
           return matchText.includes('EUROPE MENA LEAGUE') || matchText.includes('MENA LEAGUE');
         }
       }
-      return matchText.includes(acronym.toUpperCase());
+      return matchText.includes(u);
     });
 
     if (matchedMajorLeague) {
