@@ -6,18 +6,18 @@ import { getPlayerImage, getRoleIcon, translateRole } from '../../utils/helpers'
 // Map coordinates for player headshots on Map_v2.png (absolute positioning)
 const mapPositions = {
   blue: {
-    top: { top: '32%', left: '26%' },      // Top Lane Blue
-    jungle: { top: '55%', left: '32%' },   // Jungle Blue (lower-left jungle)
-    mid: { top: '48%', left: '38%' },      // Mid Lane Blue
-    adc: { top: '75%', left: '52%' },      // Bot Lane Blue
-    support: { top: '77%', left: '56%' }   // Bot Lane Blue
+    top: { top: '29%', left: '26%' },      // Top Lane Blue
+    jungle: { top: '37%', left: '35%' },   // Jungle Blue (lower-left jungle)
+    mid: { top: '46%', left: '45%' },      // Mid Lane Blue
+    adc: { top: '72%', left: '66%' },      // Bot Lane Blue
+    support: { top: '77%', left: '72%' }   // Bot Lane Blue
   },
   red: {
-    top: { top: '17%', left: '42%' },      // Top Lane Red (further up top)
-    jungle: { top: '28%', left: '50%' },   // Jungle Red (upper-right jungle)
-    mid: { top: '36%', left: '48%' },      // Mid Lane Red
-    adc: { top: '48%', left: '72%' },      // Bot Lane Red
-    support: { top: '52%', left: '74%' }   // Bot Lane Red
+    top: { top: '16%', left: '40%' },      // Top Lane Red (further up top)
+    jungle: { top: '26%', left: '50%' },   // Jungle Red (upper-right jungle)
+    mid: { top: '36%', left: '55%' },      // Mid Lane Red
+    adc: { top: '50%', left: '80%' },      // Bot Lane Red
+    support: { top: '58%', left: '84%' }   // Bot Lane Red
   }
 };
 
