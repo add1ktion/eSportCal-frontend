@@ -11,7 +11,12 @@ const GAMES_DATABASE = [
       { name: 'LEC', icon: '/logos/League of Legends/LEC.png' },
       { name: 'LCK', icon: '/logos/League of Legends/LCK.png' },
       { name: 'LPL', icon: '/logos/League of Legends/LPL.png' },
-      { name: 'LCS', icon: '/logos/League of Legends/LCS.png' }
+      { name: 'LCS', icon: '/logos/League of Legends/LCS.png' },
+      { name: 'Worlds', icon: '/logos/League of Legends/Worlds.png' },
+      { name: 'First Stand', icon: '/logos/League of Legends/First_Stand.png' },
+      { name: 'MSI', icon: '/logos/League of Legends/MSI.png' },
+      { name: 'EMEA Masters', icon: '/logos/League of Legends/EMEA_Masters.png' },
+      { name: 'LFL', icon: '/logos/League of Legends/LFL.png' }
     ]
   },
   {
@@ -22,7 +27,9 @@ const GAMES_DATABASE = [
       { name: 'VCT EMEA', icon: '/logos/Valorant/VCT_EMEA.png' },
       { name: 'VCT Americas', icon: '/logos/Valorant/VCT_Americas.png' },
       { name: 'VCT Pacific', icon: '/logos/Valorant/VCT_Pacific.png' },
-      { name: 'VCT CN', icon: '/logos/Valorant/VCT_CN.png' }
+      { name: 'VCT CN', icon: '/logos/Valorant/VCT_CN.png' },
+      { name: 'Valorant Champions', icon: '/logos/Valorant/Valorant_Champions.png' },
+      { name: 'VCT Masters', icon: '/logos/Valorant/VCT_Masters.png' }
     ]
   },
   {
@@ -56,7 +63,9 @@ const GAMES_DATABASE = [
       { name: 'NA League', icon: '/logos/Rainbow 6 Siege/NA_League.png' },
       { name: 'SA League', icon: '/logos/Rainbow 6 Siege/SA_League.png' },
       { name: 'CN League', icon: '/logos/Rainbow 6 Siege/CN_League.png' },
-      { name: 'AP League', icon: '/logos/Rainbow 6 Siege/AP_League.png' }
+      { name: 'AP League', icon: '/logos/Rainbow 6 Siege/AP_League.png' },
+      { name: 'Six Invitational', icon: '/logos/Rainbow 6 Siege/Six_Invitational.png' },
+      { name: 'Six Major', icon: '/logos/Rainbow 6 Siege/Six_Major.png' }
     ]
   }
 ];

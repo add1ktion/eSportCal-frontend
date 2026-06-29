@@ -48,11 +48,11 @@ const FAVORITE_TEAMS_MAP = {
 
 // ⚙️ DEFINITIVE MAJOR LEAGUES DATABASE (Used for precise filtering)
 const MAJOR_LEAGUES = {
-  lol: ['LEC', 'LCK', 'LPL', 'LCS'],
-  valorant: ['VCT EMEA', 'VCT Americas', 'VCT Pacific', 'VCT CN'],
+  lol: ['LEC', 'LCK', 'LPL', 'LCS', 'Worlds', 'First Stand', 'MSI', 'EMEA Masters', 'LFL'],
+  valorant: ['VCT EMEA', 'VCT Americas', 'VCT Pacific', 'VCT CN', 'Valorant Champions', 'VCT Masters'],
   csgo: ['PGL', 'IEM', 'ESL', 'Blast'],
   dota2: ['The International', 'Dream League', 'ESL One', 'PGL Wallachia'],
-  r6: ['MENA League', 'NA League', 'SA League', 'CN League', 'AP League']
+  r6: ['MENA League', 'NA League', 'SA League', 'CN League', 'AP League', 'Six Invitational', 'Six Major']
 };
 
 function App() {
@@ -94,14 +94,33 @@ function App() {
     onConfirm: null
   });
 
-  // ⚙️ ACTIVE FILTERS STATE
-  const [activeFilters, setActiveFilters] = useState({
-    lol: ['LEC', 'LCK', 'LPL', 'LCS'],
-    valorant: ['VCT EMEA', 'VCT Americas', 'VCT Pacific', 'VCT CN'],
-    csgo: ['PGL', 'IEM', 'ESL', 'Blast'],
-    dota2: ['The International', 'Dream League', 'ESL One', 'PGL Wallachia'],
-    r6: ['MENA League', 'NA League', 'SA League', 'CN League', 'AP League']
+  // ⚙️ ACTIVE FILTERS STATE (Persisted in localStorage)
+  const [activeFilters, setActiveFilters] = useState(() => {
+    const saved = localStorage.getItem('sidebarFilters');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Ensure all games are keys in the parsed object
+        if (parsed.lol && parsed.valorant && parsed.csgo && parsed.dota2 && parsed.r6) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error("Failed to parse saved filters:", e);
+      }
+    }
+    return {
+      lol: [...MAJOR_LEAGUES.lol],
+      valorant: [...MAJOR_LEAGUES.valorant],
+      csgo: [...MAJOR_LEAGUES.csgo],
+      dota2: [...MAJOR_LEAGUES.dota2],
+      r6: [...MAJOR_LEAGUES.r6]
+    };
   });
+
+  // Save filters to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('sidebarFilters', JSON.stringify(activeFilters));
+  }, [activeFilters]);
 
   // ⚙️ UX AUTO-SWITCH EFFECT: Automatically toggles between Finished/Upcoming based on selected week
   useEffect(() => {
@@ -187,9 +206,20 @@ function App() {
     const matchText = `${match.league_name} ${match.serie_name} ${match.stage_name || ''}`.toUpperCase();
     const gameMajorLeagues = MAJOR_LEAGUES[gameId] || [];
 
-    const matchedMajorLeague = gameMajorLeagues.find(acronym => 
-      matchText.includes(acronym.toUpperCase())
-    );
+    const matchedMajorLeague = gameMajorLeagues.find(acronym => {
+      if (gameId === 'r6') {
+        if (acronym === 'NA League') {
+          return matchText.includes('NORTH AMERICA LEAGUE') || matchText.includes('NA LEAGUE');
+        }
+        if (acronym === 'AP League') {
+          return matchText.includes('ASIA PACIFIC LEAGUE') || matchText.includes('AP LEAGUE');
+        }
+        if (acronym === 'MENA League') {
+          return matchText.includes('EUROPE MENA LEAGUE') || matchText.includes('MENA LEAGUE');
+        }
+      }
+      return matchText.includes(acronym.toUpperCase());
+    });
 
     if (matchedMajorLeague) {
       return allowedFilters.includes(matchedMajorLeague);
