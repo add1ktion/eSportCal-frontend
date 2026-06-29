@@ -6,7 +6,7 @@ import { getPlayerImage, getRoleIcon, translateRole } from '../../utils/helpers'
 // Map coordinates for player headshots on Map_v2.png (absolute positioning)
 const mapPositions = {
   blue: {
-    top: { top: '29%', left: '26%' },      // Top Lane Blue
+    top: { top: '23%', left: '26%' },      // Top Lane Blue
     jungle: { top: '37%', left: '35%' },   // Jungle Blue (lower-left jungle)
     mid: { top: '46%', left: '45%' },      // Mid Lane Blue
     adc: { top: '72%', left: '66%' },      // Bot Lane Blue
@@ -103,10 +103,9 @@ const MatchDetails = ({ match }) => {
         {twitchChannel ? (
           <iframe
             src={`https://player.twitch.tv/?channel=${twitchChannel}&parent=localhost&parent=127.0.0.1`}
-            height="360"
-            width="100%"
             allowFullScreen
-            className="rounded-2xl border border-[#232549] shadow-2xl"
+            className="w-full aspect-video rounded-2xl border border-[#232549] shadow-2xl h-auto"
+            style={{ aspectRatio: '16/9' }}
           />
         ) : match.stream_url ? (
           <div className="bg-[#181933] border border-[#232549] p-6 rounded-2xl text-center shadow-lg">
