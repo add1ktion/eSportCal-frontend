@@ -113,7 +113,7 @@ const MatchItem = ({ match, isExpanded, onToggleExpand }) => {
         </div>
 
         {/* Official Twitch/Kick Logo & Stage/Format */}
-        <div className="flex flex-col items-end justify-center gap-1 w-full overflow-hidden pl-4">
+        <div className="flex flex-col items-end justify-center gap-1 w-full pl-4">
           {match.stream_url ? (
             <a 
               href={match.stream_url} 
