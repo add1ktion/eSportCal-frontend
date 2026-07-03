@@ -149,21 +149,9 @@ function AuthModal({ initialMode = 'login', resetToken = '', onClose, onLoginSuc
     }
   };
 
-  // Mock SSO Login Click
+  // SSO Login Redirect
   const handleSSOClick = (provider) => {
-    const mockUser = {
-      username: `SSO_${provider}_User`,
-      email: `${provider.toLowerCase()}@esportcal-sso.com`,
-      favoriteTeam: ''
-    };
-    const mockToken = 'mock_jwt_token_for_sso_testing';
-    
-    onLoginSuccess(mockUser, mockToken);
-    triggerAlert(
-      'SSO Authentication Success',
-      `Logged in successfully using your ${provider} account (Demo Mode).`,
-      'alert'
-    );
+    window.location.href = `http://localhost:5001/api/auth/${provider.toLowerCase()}`;
   };
 
   return (
@@ -430,25 +418,18 @@ function renderSSOSection(handleSSOClick) {
       <div className="text-center text-[10px] uppercase tracking-wider text-slate-500 font-bold select-none">
         Or sign in with
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
           onClick={() => handleSSOClick('Google')}
-          className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-[#ea4335]/10 hover:bg-[#ea4335]/20 text-[#ea4335] border border-[#ea4335]/30 rounded-lg font-bold text-[10px] cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
+          className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-[#ea4335]/10 hover:bg-[#ea4335]/20 text-[#ea4335] border border-[#ea4335]/30 rounded-lg font-bold text-xs cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
         >
           Google
         </button>
         <button
           type="button"
-          onClick={() => handleSSOClick('Apple')}
-          className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white/5 hover:bg-white/10 text-white border border-white/20 rounded-lg font-bold text-[10px] cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
-        >
-          Apple
-        </button>
-        <button
-          type="button"
           onClick={() => handleSSOClick('Twitch')}
-          className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-[#9146ff]/10 hover:bg-[#9146ff]/20 text-[#a970ff] border border-[#9146ff]/30 rounded-lg font-bold text-[10px] cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
+          className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-[#9146ff]/10 hover:bg-[#9146ff]/20 text-[#a970ff] border border-[#9146ff]/30 rounded-lg font-bold text-xs cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
         >
           Twitch
         </button>

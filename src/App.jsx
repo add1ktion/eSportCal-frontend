@@ -182,6 +182,20 @@ function App() {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 
+    // Check URL parameters for OAuth successful redirect
+    const ssoToken = params.get('token');
+    const ssoUserRaw = params.get('user');
+    if (ssoToken && ssoUserRaw) {
+      try {
+        const ssoUser = JSON.parse(decodeURIComponent(ssoUserRaw));
+        handleLoginSuccess(ssoUser, ssoToken);
+        // Clean query params from URL bar for clean UX
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } catch (err) {
+        console.error('Failed to parse SSO user from URL params:', err);
+      }
+    }
+
     // Fetch matches from local Postgres cache
     axios.get('http://localhost:5001/api/matches')
       .then(res => {
