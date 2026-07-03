@@ -151,7 +151,7 @@ function AuthModal({ initialMode = 'login', resetToken = '', onClose, onLoginSuc
 
   // SSO Login Redirect
   const handleSSOClick = (provider) => {
-    window.location.href = `http://localhost:5001/api/auth/${provider.toLowerCase()}`;
+    window.location.assign(`http://localhost:5001/api/auth/${provider.toLowerCase()}`);
   };
 
   return (

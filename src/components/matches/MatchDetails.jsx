@@ -62,7 +62,7 @@ const MatchDetails = ({ match }) => {
 
       fetchRosters();
     }
-  }, [isLoL, teamA.id, teamB.id]);
+  }, [isLoL, teamA.id, teamB.id, teamAPlayers.length, teamBPlayers.length]);
 
   const getTwitchChannel = (url) => {
     if (!url) return null;
