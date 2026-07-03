@@ -58,6 +58,8 @@ const MAJOR_LEAGUES = {
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'register' | 'forgot-password' | 'reset-password'
+  const [resetToken, setResetToken] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
@@ -167,6 +169,17 @@ function App() {
       setUser(parsedUser);
       setIsLoggedIn(true);
       fetchUserFavorites(token, parsedUser);
+    }
+
+    // Check URL parameters for password reset token
+    const params = new URLSearchParams(window.location.search);
+    const rToken = params.get('resetToken');
+    if (rToken) {
+      setResetToken(rToken);
+      setAuthModalMode('reset-password');
+      setShowAuthModal(true);
+      // Clean query params from URL bar for clean UX
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
 
     // Fetch matches from local Postgres cache
@@ -303,17 +316,13 @@ function App() {
   };
 
   // Handle Logout
-  const handleToggleLogin = () => {
-    if (isLoggedIn) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      setUser({ username: '', email: '', password: '', favoriteTeam: '' });
-      setIsLoggedIn(false);
-      setShowSettings(false);
-      triggerAlert('Logged Out', 'You have been successfully disconnected from your account.', 'alert');
-    } else {
-      setShowAuthModal(true);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser({ username: '', email: '', password: '', favoriteTeam: '' });
+    setIsLoggedIn(false);
+    setShowSettings(false);
+    triggerAlert('Logged Out', 'You have been successfully disconnected from your account.', 'alert');
   };
 
   const handleDeleteAccount = async () => {
@@ -342,7 +351,9 @@ function App() {
       {/* Header */}
       <Navbar 
         isLoggedIn={isLoggedIn} 
-        onToggleLogin={handleToggleLogin} 
+        onOpenLogin={() => { setAuthModalMode('login'); setShowAuthModal(true); }}
+        onOpenRegister={() => { setAuthModalMode('register'); setShowAuthModal(true); }}
+        onLogout={handleLogout}
         onOpenSettings={() => setShowSettings(true)} 
       />
 
@@ -423,7 +434,9 @@ function App() {
       {/* Auth Modal */}
       {showAuthModal && (
         <AuthModal 
-          onClose={() => setShowAuthModal(false)} 
+          initialMode={authModalMode}
+          resetToken={resetToken}
+          onClose={() => { setShowAuthModal(false); setResetToken(''); }} 
           onLoginSuccess={handleLoginSuccess}
           triggerAlert={triggerAlert}
         />

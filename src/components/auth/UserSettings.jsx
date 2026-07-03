@@ -18,9 +18,11 @@ const FAVORITE_TEAMS_DATABASE = [
 ];
 
 function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAlert }) {
-  const [username, setUsername] = useState(user.username);
-  const [email, setEmail] = useState(user.email);
-  const [password, setPassword] = useState(user.password);
+  const [username] = useState(user.username);
+  const [email] = useState(user.email);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [selectedFavorite, setSelectedFavorite] = useState(user.favoriteTeam || '');
 
   const handleSelectTeam = (teamName) => {
@@ -32,32 +34,39 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
     const token = localStorage.getItem('token');
 
     try {
-      // 🐘 DATABASE PERSISTENCE: Save profile updates (username, email, password) to PostgreSQL!
+      // 🐘 DATABASE PERSISTENCE: Save profile updates (password change) to PostgreSQL!
       if (token) {
         const updateData = {};
-        if (username !== user.username) updateData.username = username;
-        if (email !== user.email) updateData.email = email;
-        // Only update password if it's filled and different
-        if (password !== user.password && password !== '') updateData.password = password;
+        
+        // If user wants to change password
+        if (newPassword !== '') {
+          if (!currentPassword) {
+            triggerAlert('Validation Error', 'Please enter your current password to set a new password.', 'alert');
+            return;
+          }
+          if (newPassword !== confirmNewPassword) {
+            triggerAlert('Validation Error', 'New passwords do not match.', 'alert');
+            return;
+          }
+          if (newPassword.length < 8) {
+            triggerAlert('Validation Error', 'New password must be at least 8 characters.', 'alert');
+            return;
+          }
+          updateData.password = newPassword;
+          updateData.currentPassword = currentPassword;
+        }
 
         if (Object.keys(updateData).length > 0) {
-          const res = await axios.put(
+          await axios.put(
             'http://localhost:5001/api/user/me',
             updateData,
             { headers: { Authorization: `Bearer ${token}` } }
           );
-          
-          // If the username has changed, a new token is returned
-          if (res.data.token) {
-            localStorage.setItem('token', res.data.token);
-          }
         }
       }
 
-      // 🐘 DATABASE PERSISTENCE: Save favorite team to PostgreSQL via Ilan's API!
+      // 🐘 DATABASE PERSISTENCE: Save favorite team to PostgreSQL via API!
       if (selectedTeamObj && token) {
-        // First, clear old favorites (since we only allow ONE favorite team for the MVP)
-        // Then, insert the new one
         await axios.post(
           'http://localhost:5001/api/user/favorites',
           { pandascore_team_id: selectedTeamObj.pandascore_id },
@@ -70,7 +79,7 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
         'All your profile modifications and favorite team have been successfully saved in our Database!', 
         'alert',
         () => {
-          onUpdateUser({ ...user, username, email, password, favoriteTeam: selectedFavorite });
+          onUpdateUser({ ...user, favoriteTeam: selectedFavorite });
           onClose();
         }
       );
@@ -112,14 +121,14 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
           <div className="flex flex-col gap-4 border-b border-[#232549] pb-6">
             <h2 className="text-3xl font-bold text-center">User Settings</h2>
             
-            <div className="flex flex-col gap-3 max-w-xs mx-auto text-sm w-full">
+            <div className="flex flex-col gap-3 max-w-sm mx-auto text-sm w-full">
               <div className="flex items-center justify-between gap-4">
                 <span className="font-bold text-slate-300">Username :</span>
                 <input 
                   type="text" 
                   value={username} 
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="bg-[#c0c2d6] text-[#090a15] rounded-lg px-3 py-0.5 text-xs w-44 outline-none font-bold text-center"
+                  disabled
+                  className="bg-[#c0c2d6]/50 text-[#090a15] rounded-lg px-3 py-0.5 text-xs w-48 outline-none font-bold text-center opacity-60 cursor-not-allowed"
                 />
               </div>
               
@@ -128,23 +137,50 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
                 <input 
                   type="email" 
                   value={email} 
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-[#c0c2d6] text-[#090a15] rounded-lg px-3 py-0.5 text-xs w-44 outline-none font-bold text-center"
+                  disabled
+                  className="bg-[#c0c2d6]/50 text-[#090a15] rounded-lg px-3 py-0.5 text-xs w-48 outline-none font-bold text-center opacity-60 cursor-not-allowed"
+                />
+              </div>
+
+              <div className="border-t border-[#232549]/50 my-2 pt-2">
+                <h3 className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wide">Change Password</h3>
+              </div>
+
+              <div className="flex items-center justify-between gap-4">
+                <span className="font-bold text-slate-300 text-xs">Current Password :</span>
+                <input 
+                  type="password" 
+                  placeholder="Enter current password"
+                  value={currentPassword} 
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  className="bg-[#c0c2d6] text-[#090a15] rounded-lg px-3 py-0.5 text-xs w-48 outline-none font-bold text-center placeholder-slate-600"
                 />
               </div>
 
               <div className="flex items-center justify-between gap-4">
-                <span className="font-bold text-slate-300">Password :</span>
+                <span className="font-bold text-slate-300 text-xs">New Password :</span>
                 <input 
                   type="password" 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-[#c0c2d6] text-[#090a15] rounded-lg px-3 py-0.5 text-xs w-44 outline-none font-bold text-center"
+                  placeholder="Min 8 characters"
+                  value={newPassword} 
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="bg-[#c0c2d6] text-[#090a15] rounded-lg px-3 py-0.5 text-xs w-48 outline-none font-bold text-center placeholder-slate-600"
+                />
+              </div>
+
+              <div className="flex items-center justify-between gap-4">
+                <span className="font-bold text-slate-300 text-xs">Confirm New :</span>
+                <input 
+                  type="password" 
+                  placeholder="Confirm new password"
+                  value={confirmNewPassword} 
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  className="bg-[#c0c2d6] text-[#090a15] rounded-lg px-3 py-0.5 text-xs w-48 outline-none font-bold text-center placeholder-slate-600"
                 />
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 max-w-xs mx-auto w-full mt-2">
+            <div className="flex flex-col gap-2 max-w-sm mx-auto w-full mt-2">
               <button 
                 onClick={handleApplyChanges}
                 className="w-full bg-[#c0c2d6] hover:bg-white text-[#090a15] py-2 rounded-xl font-bold text-xs transition cursor-pointer"
