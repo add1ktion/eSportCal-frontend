@@ -331,7 +331,7 @@ function App() {
     return `${startStr} - ${endStr}`;
   };
 
-  const triggerAlert = (title, message, type = 'alert', onConfirm = null) => {
+  function triggerAlert(title, message, type = 'alert', onConfirm = null) {
     setAlertState({
       isOpen: true,
       title,
@@ -342,11 +342,11 @@ function App() {
         closeAlert();
       }
     });
-  };
+  }
 
-  const closeAlert = () => {
+  function closeAlert() {
     setAlertState(prev => ({ ...prev, isOpen: false }));
-  };
+  }
 
   // Handle Logout
   const handleLogout = () => {

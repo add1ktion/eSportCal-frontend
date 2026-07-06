@@ -33,21 +33,6 @@ function AuthModal({ initialMode = 'login', resetToken = '', onClose, onLoginSuc
     e.preventDefault();
     setError(null);
 
-    // 🛠️ DEV / TEST ACCOUNT BYPASS
-    if (loginIdentifier === 'admin' && loginPassword === 'admin') {
-      const mockUser = {
-        username: 'Test',
-        email: 'admin@esportcal.com',
-        password: 'admin',
-        favoriteTeam: 'Karmine Corp'
-      };
-      const mockToken = 'mock_jwt_token_for_local_testing_purposes';
-      
-      onLoginSuccess(mockUser, mockToken);
-      triggerAlert('Welcome back!', `Logged in successfully as ${mockUser.username} (Dev Mode).`, 'alert');
-      return;
-    }
-
     try {
       const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         identifier: loginIdentifier,
