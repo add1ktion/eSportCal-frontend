@@ -192,6 +192,24 @@ function App() {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 
+    // Check URL parameters for email verification result
+    const verified = params.get('verified');
+    if (verified) {
+      if (verified === 'true') {
+        triggerAlert('Email Verified!', 'Your account has been successfully verified! You can now log in.', 'alert');
+        setAuthModalMode('login');
+        setShowAuthModal(true);
+      } else if (verified === 'already') {
+        triggerAlert('Already Verified', 'Your email is already verified. You can log in.', 'alert');
+        setAuthModalMode('login');
+        setShowAuthModal(true);
+      } else {
+        triggerAlert('Verification Error', 'The verification link is invalid or has expired.', 'alert');
+      }
+      // Clean query params from URL bar for clean UX
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     // Check URL parameters for OAuth successful redirect
     const ssoToken = params.get('token');
     const ssoUserRaw = params.get('user');
