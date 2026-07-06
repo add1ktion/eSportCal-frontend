@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react';
+import { API_BASE_URL } from '../../config';
 
 function AuthModal({ initialMode = 'login', resetToken = '', onClose, onLoginSuccess, triggerAlert }) {
   const [mode, setMode] = useState(initialMode); // 'login' | 'register' | 'forgot-password' | 'reset-password'
@@ -48,7 +49,7 @@ function AuthModal({ initialMode = 'login', resetToken = '', onClose, onLoginSuc
     }
 
     try {
-      const response = await axios.post('http://localhost:5001/api/auth/login', {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         identifier: loginIdentifier,
         password: loginPassword
       });
@@ -74,7 +75,7 @@ function AuthModal({ initialMode = 'login', resetToken = '', onClose, onLoginSuc
     }
 
     try {
-      const response = await axios.post('http://localhost:5001/api/auth/register', {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, {
         username: registerUsername.trim(),
         email: registerEmail.toLowerCase().trim(),
         password: registerPassword
@@ -104,7 +105,7 @@ function AuthModal({ initialMode = 'login', resetToken = '', onClose, onLoginSuc
     setSuccessMessage(null);
 
     try {
-      await axios.post('http://localhost:5001/api/auth/forgot-password', {
+      await axios.post(`${API_BASE_URL}/api/auth/forgot-password`, {
         email: forgotEmail.toLowerCase().trim()
       });
 
@@ -128,7 +129,7 @@ function AuthModal({ initialMode = 'login', resetToken = '', onClose, onLoginSuc
     }
 
     try {
-      await axios.post('http://localhost:5001/api/auth/reset-password', {
+      await axios.post(`${API_BASE_URL}/api/auth/reset-password`, {
         token: resetToken,
         password: newPassword
       });
@@ -151,7 +152,7 @@ function AuthModal({ initialMode = 'login', resetToken = '', onClose, onLoginSuc
 
   // SSO Login Redirect
   const handleSSOClick = (provider) => {
-    window.location.assign(`http://localhost:5001/api/auth/${provider.toLowerCase()}`);
+    window.location.assign(`${API_BASE_URL}/api/auth/${provider.toLowerCase()}`);
   };
 
   return (

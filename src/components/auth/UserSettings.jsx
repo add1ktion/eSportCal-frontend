@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react';
+import { API_BASE_URL } from '../../config';
 
 // 🛡️ High-quality local team metadata with official PandaScore IDs!
 const FAVORITE_TEAMS_DATABASE = [
@@ -58,7 +59,7 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
 
         if (Object.keys(updateData).length > 0) {
           await axios.put(
-            'http://localhost:5001/api/user/me',
+            `${API_BASE_URL}/api/user/me`,
             updateData,
             { headers: { Authorization: `Bearer ${token}` } }
           );
@@ -68,7 +69,7 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
       // 🐘 DATABASE PERSISTENCE: Save favorite team to PostgreSQL via API!
       if (selectedTeamObj && token) {
         await axios.post(
-          'http://localhost:5001/api/user/favorites',
+          `${API_BASE_URL}/api/user/favorites`,
           { pandascore_team_id: selectedTeamObj.pandascore_id },
           { headers: { Authorization: `Bearer ${token}` } }
         );

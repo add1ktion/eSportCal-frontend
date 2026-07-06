@@ -1,6 +1,6 @@
-// frontend/src/App.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from './config';
 import { 
   startOfWeek, 
   endOfWeek, 
@@ -139,7 +139,7 @@ function App() {
   // Fetch user favorites directly from PostgreSQL!
   const fetchUserFavorites = async (token, currentUser) => {
     try {
-      const res = await axios.get('http://localhost:5001/api/user/favorites', {
+      const res = await axios.get(`${API_BASE_URL}/api/user/favorites`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const dbFavorites = res.data.favorites;
@@ -207,7 +207,7 @@ function App() {
     }
 
     // Fetch matches from local Postgres cache
-    axios.get('http://localhost:5001/api/matches')
+    axios.get(`${API_BASE_URL}/api/matches`)
       .then(res => {
         setMatches(res.data);
         setLoading(false);
@@ -344,7 +344,7 @@ function App() {
     const token = localStorage.getItem('token');
     try {
       if (token) {
-        await axios.delete('http://localhost:5001/api/user/me', {
+        await axios.delete(`${API_BASE_URL}/api/user/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }

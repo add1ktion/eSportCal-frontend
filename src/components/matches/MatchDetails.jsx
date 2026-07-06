@@ -1,6 +1,7 @@
 // frontend/src/components/MatchDetails.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 import { getPlayerImage, getRoleIcon, translateRole } from '../../utils/helpers';
 
 // Map coordinates for player headshots on Map_v2.png (absolute positioning)
@@ -40,12 +41,12 @@ const MatchDetails = ({ match }) => {
         try {
           const promises = [];
           if (teamA.id) {
-            promises.push(axios.get(`http://localhost:5001/api/teams/${teamA.id}`));
+            promises.push(axios.get(`${API_BASE_URL}/api/teams/${teamA.id}`));
           } else {
             promises.push(Promise.resolve({ data: { players: [] } }));
           }
           if (teamB.id) {
-            promises.push(axios.get(`http://localhost:5001/api/teams/${teamB.id}`));
+            promises.push(axios.get(`${API_BASE_URL}/api/teams/${teamB.id}`));
           } else {
             promises.push(Promise.resolve({ data: { players: [] } }));
           }

@@ -1,7 +1,7 @@
-// frontend/src/components/ContactModal.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react';
+import { API_BASE_URL } from '../../config';
 
 function ContactModal({ onClose, triggerAlert }) {
   const [name, setName] = useState('');
@@ -16,7 +16,7 @@ function ContactModal({ onClose, triggerAlert }) {
 
     try {
       // Calls our secure backend proxy mail sender!
-      await axios.post('http://localhost:5001/api/contact', {
+      await axios.post(`${API_BASE_URL}/api/contact`, {
         name,
         email,
         subject,
