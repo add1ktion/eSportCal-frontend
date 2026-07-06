@@ -43,7 +43,7 @@ const FavoriteTeams = ({ favoriteMatches, favoriteTeamName }) => {
       {/* Title & Filters Row */}
       <div className="border-b border-[#232549] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-3xl font-bold tracking-wide m-0">
-          Favorite Team Feed: <span className="text-[#5c3be0]">{favoriteTeamName}</span>
+          Favorite Team : <span className="text-[#5c3be0]">{favoriteTeamName}</span>
         </h1>
 
         {/* Local Filter Pills */}

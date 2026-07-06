@@ -406,7 +406,7 @@ function App() {
           {/* Standard Matches Container */}
           <main className="bg-[#111226] border border-[#232549] rounded-3xl p-6 flex flex-col gap-4 shadow-xl">
             <div className="border-b border-[#232549] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h1 className="text-3xl font-bold tracking-wide m-0">Matches</h1>
+              <h1 className="text-3xl font-bold tracking-wide m-0">Matchs</h1>
               
               {/* 📅 Figma Style Weekly Navigation Bar */}
               <div className="flex items-center gap-4 bg-[#1c1d33] border border-[#232549] px-4 py-1.5 rounded-2xl self-center sm:self-auto shadow-inner select-none">
