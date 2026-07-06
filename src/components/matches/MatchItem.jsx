@@ -65,7 +65,7 @@ const MatchItem = ({ match, isExpanded, onToggleExpand }) => {
           )}
           {match.status === 'finished' && (
             <span className="text-[10px] text-slate-400 font-bold uppercase mb-0.5">
-              FINAL
+              Terminé
             </span>
           )}
           {match.status === 'not_started' && (

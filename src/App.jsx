@@ -106,6 +106,11 @@ function App() {
         const parsed = JSON.parse(saved);
         // Ensure all games are keys in the parsed object
         if (parsed.lol && parsed.valorant && parsed.csgo && parsed.dota2 && parsed.r6) {
+          // If the saved R6 filters do not contain the new Tier 1 leagues, reset R6 filters to new defaults
+          const hasNewLeagues = parsed.r6.some(l => ['Europe League', 'North America League', 'Brazil League'].includes(l));
+          if (!hasNewLeagues) {
+            parsed.r6 = [...MAJOR_LEAGUES.r6];
+          }
           return parsed;
         }
       } catch (e) {
