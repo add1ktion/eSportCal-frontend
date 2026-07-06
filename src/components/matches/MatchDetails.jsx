@@ -104,7 +104,7 @@ const MatchDetails = ({ match }) => {
         {twitchChannel ? (
           <div className="relative w-full overflow-hidden rounded-2xl border border-[#232549] shadow-2xl" style={{ paddingTop: '56.25%' }}>
             <iframe
-              src={`https://player.twitch.tv/?channel=${twitchChannel}&parent=localhost&parent=127.0.0.1`}
+              src={`https://player.twitch.tv/?channel=${twitchChannel}&parent=${window.location.hostname}`}
               allowFullScreen
               className="absolute top-0 left-0 w-full h-full border-0"
             />
