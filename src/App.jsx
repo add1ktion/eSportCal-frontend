@@ -25,7 +25,9 @@ import MatchFilters from './components/matches/MatchFilters';
 const GAME_SLUG_MAP = {
   'cs-go': 'csgo',
   'cs-2': 'csgo',
+  'cs2': 'csgo',
   'counter-strike': 'csgo',
+  'counter-strike-2': 'csgo',
   'league-of-legends': 'lol',
   'valorant': 'valorant',
   'dota-2': 'dota2',
@@ -52,7 +54,7 @@ const MAJOR_LEAGUES = {
   valorant: ['VCT EMEA', 'VCT Americas', 'VCT Pacific', 'VCT CN', 'Valorant Champions', 'VCT Masters'],
   csgo: ['PGL', 'IEM', 'ESL', 'Blast'],
   dota2: ['The International', 'Dream League', 'ESL One', 'PGL Wallachia'],
-  r6: ['MENA League', 'NA League', 'SA League', 'CN League', 'AP League', 'Six Invitational', 'Six Major']
+  r6: ['Europe League', 'North America League', 'Brazil League', 'LATAM League', 'Asia Pacific League', 'Six Invitational', 'Six Major']
 };
 
 function App() {
@@ -284,14 +286,25 @@ function App() {
         }
       }
       if (gameId === 'r6') {
-        if (acronym === 'NA League') {
+        if (acronym === 'Europe League') {
+          return matchText.includes('EUROPE LEAGUE') || matchText.includes('EUROPE MENA LEAGUE') || matchText.includes('MENA LEAGUE');
+        }
+        if (acronym === 'North America League') {
           return matchText.includes('NORTH AMERICA LEAGUE') || matchText.includes('NA LEAGUE');
         }
-        if (acronym === 'AP League') {
-          return matchText.includes('ASIA PACIFIC LEAGUE') || matchText.includes('AP LEAGUE');
+        if (acronym === 'LATAM League') {
+          return matchText.includes('LATAM LEAGUE') || matchText.includes('SOUTH AMERICA LEAGUE') || matchText.includes('SA LEAGUE');
         }
-        if (acronym === 'MENA League') {
-          return matchText.includes('EUROPE MENA LEAGUE') || matchText.includes('MENA LEAGUE');
+        if (acronym === 'Asia Pacific League') {
+          return matchText.includes('ASIA PACIFIC LEAGUE') || matchText.includes('AP LEAGUE') || matchText.includes('JAPAN LEAGUE') || matchText.includes('SOUTH KOREA LEAGUE') || matchText.includes('OCEANIA LEAGUE') || matchText.includes('CN LEAGUE');
+        }
+        if (acronym === 'Six Major') {
+          return matchText.includes('SIX MAJOR') || matchText.includes('MAJOR');
+        }
+      }
+      if (gameId === 'dota2') {
+        if (u === 'DREAM LEAGUE') {
+          return matchText.includes('DREAM LEAGUE') || matchText.includes('DREAMLEAGUE');
         }
       }
       return matchText.includes(u);
