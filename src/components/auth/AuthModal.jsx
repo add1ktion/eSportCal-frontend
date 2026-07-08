@@ -411,7 +411,7 @@ function renderSSOSection(handleSSOClick) {
           className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-[#ea4335]/10 hover:bg-[#ea4335]/20 text-[#ea4335] border border-[#ea4335]/30 rounded-lg font-bold text-xs cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
         >
           <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-            <path d="M12.24 10.285V13.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l2.427-2.334C17.955 2.192 15.34 1 12.24 1 6.033 1 12.24 6.033 1 12.24s5.033 11.24 11.24 11.24c6.478 0 10.793-4.537 10.793-10.984 0-.74-.078-1.32-.174-1.878l-10.619.007z"/>
+            <path d="M21.35 11.1h-9.17v2.73h6.51c-.3 1.56-1.7 2.85-3.51 2.85-2.22 0-4.04-1.82-4.04-4.04s1.82-4.04 4.04-4.04c1.04 0 1.96.4 2.67 1.07l2.12-2.12C18.77 6.3 15.6 5 12.18 5 7.68 5 4.04 8.64 4.04 13.14s3.64 8.14 8.14 8.14c4.71 0 7.84-3.3 7.84-7.97 0-.48-.05-.9-.17-1.21z"/>
           </svg>
           Google
         </button>
