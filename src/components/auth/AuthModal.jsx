@@ -410,6 +410,9 @@ function renderSSOSection(handleSSOClick) {
           onClick={() => handleSSOClick('Google')}
           className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-[#ea4335]/10 hover:bg-[#ea4335]/20 text-[#ea4335] border border-[#ea4335]/30 rounded-lg font-bold text-xs cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
         >
+          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+            <path d="M12.24 10.285V13.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l2.427-2.334C17.955 2.192 15.34 1 12.24 1 6.033 1 12.24 6.033 1 12.24s5.033 11.24 11.24 11.24c6.478 0 10.793-4.537 10.793-10.984 0-.74-.078-1.32-.174-1.878l-10.619.007z"/>
+          </svg>
           Google
         </button>
         <button
@@ -417,6 +420,9 @@ function renderSSOSection(handleSSOClick) {
           onClick={() => handleSSOClick('Twitch')}
           className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-[#9146ff]/10 hover:bg-[#9146ff]/20 text-[#a970ff] border border-[#9146ff]/30 rounded-lg font-bold text-xs cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
         >
+          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+            <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+          </svg>
           Twitch
         </button>
       </div>
