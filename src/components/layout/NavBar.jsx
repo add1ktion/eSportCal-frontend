@@ -9,7 +9,7 @@ import { User } from 'lucide-react';
  * - onToggleLogin: function to handle login/logout button click.
  * - onOpenSettings: function triggered when clicking the user profile icon.
  */
-function Navbar({ isLoggedIn, onOpenLogin, onOpenRegister, onLogout, onOpenSettings }) {
+function Navbar({ isLoggedIn, onOpenLogin, onOpenRegister, onLogout, onOpenSettings, onOpenFavorites }) {
   return (
     <header className="w-full bg-[#5c3be0] py-4 px-12 flex items-center justify-between shadow-lg rounded-b-3xl border-b border-[#7351f5]/30">
       <span className="text-2xl font-bold tracking-wide text-white select-none">
@@ -20,11 +20,18 @@ function Navbar({ isLoggedIn, onOpenLogin, onOpenRegister, onLogout, onOpenSetti
         {isLoggedIn ? (
           <>
             <button
-              onClick={onOpenSettings}
+              onClick={onOpenFavorites}
               className="px-6 py-2 bg-[#3b1d98] hover:bg-[#2d1282] rounded-xl font-bold text-white shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
-              title="My eSportCal Account Settings"
+              title="My eSportCal Favorites"
             >
               My eSportCal
+            </button>
+            <button
+              onClick={onOpenSettings}
+              className="px-6 py-2 bg-green-500 hover:bg-green-600 rounded-xl font-bold text-white shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+              title="Account Settings"
+            >
+              Account
             </button>
             <button
               onClick={onLogout}
