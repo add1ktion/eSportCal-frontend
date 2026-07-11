@@ -19,13 +19,13 @@ function Navbar({ isLoggedIn, onOpenLogin, onOpenRegister, onLogout, onOpenSetti
       <div className="flex items-center gap-4">
         {isLoggedIn ? (
           <>
-            <div 
-              onClick={onOpenSettings} // 👈 CE CLIC DÉCLENCHE L'OUVERTURE DES SETTINGS !
-              className="p-2 bg-[#4c2bb0] rounded-full text-white cursor-pointer hover:bg-[#3c1fa0] hover:scale-110 active:scale-95 transition"
-              title="User Settings"
+            <button
+              onClick={onOpenSettings}
+              className="px-5 py-2 bg-[#4c2bb0] hover:bg-[#3c1fa0] rounded-xl font-bold text-white shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer text-sm"
+              title="myeSportCal Account Settings"
             >
-              <User size={20} />
-            </div>
+              myeSportCal
+            </button>
             <button
               onClick={onLogout}
               className="px-6 py-2 rounded-xl font-bold text-white shadow-md hover:scale-105 active:scale-95 transition-all duration-200 bg-red-500 hover:bg-red-600 cursor-pointer"
