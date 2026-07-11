@@ -317,10 +317,18 @@ function App() {
     return isMatchPassedFilters(match);
   });
 
-  // Filter matches for the favorite team feed (not bound to the selected week)
+  // Filter matches for the favorite team feed (bound to the selected week)
   const favoriteMatches = matches.filter(match => {
     const isFavoriteTeam = match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()));
     if (!isFavoriteTeam) return false;
+
+    const matchDate = new Date(match.scheduled_at);
+    const isInWeek = isWithinInterval(matchDate, {
+      start: currentWeekStart,
+      end: currentWeekEnd
+    });
+    if (!isInWeek) return false;
+
     return isMatchPassedFilters(match);
   });
 
