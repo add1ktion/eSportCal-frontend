@@ -1,22 +1,8 @@
 // frontend/src/components/UserSettings.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
-
-// 🛡️ High-quality local team metadata with official PandaScore IDs!
-const FAVORITE_TEAMS_DATABASE = [
-  { name: 'Karmine Corp', icon: '/logos/Teams/KC.png', pandascore_id: 128268 },
-  { name: 'Fnatic', icon: '/logos/Teams/Fnatic.png', pandascore_id: 3201 },
-  { name: 'G2 Esports', icon: '/logos/Teams/G2.png', pandascore_id: 3210 },
-  { name: 'GiantX', icon: '/logos/Teams/GiantX.png', pandascore_id: 136005 },
-  { name: 'MKOI', icon: '/logos/Teams/MKOI.png', pandascore_id: 137078 },
-  { name: 'Natus Vincere', icon: '/logos/Teams/Natus_Vincere.png', pandascore_id: 3214 },
-  { name: 'Shifters', icon: '/logos/Teams/Shifters.png', pandascore_id: 138612 },
-  { name: 'SK Gaming', icon: '/logos/Teams/SK_Gaming.png', pandascore_id: 3212 },
-  { name: 'Team Heretics', icon: '/logos/Teams/Team_Heretics.png', pandascore_id: 132212 },
-  { name: 'Team Vitality', icon: '/logos/Teams/Vitality.png', pandascore_id: 3213 }
-];
 
 function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAlert }) {
   const [username] = useState(user.username);
@@ -25,13 +11,30 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [selectedFavorite, setSelectedFavorite] = useState(user.favoriteTeam || '');
+  const [teams, setTeams] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTeams() {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/teams`);
+        setTeams(response.data);
+      } catch (err) {
+        console.error('Failed to load dynamic teams:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadTeams();
+  }, []);
 
   const handleSelectTeam = (teamName) => {
     setSelectedFavorite(selectedFavorite === teamName ? '' : teamName);
   };
 
   const handleApplyChanges = async () => {
-    const selectedTeamObj = FAVORITE_TEAMS_DATABASE.find(t => t.name === selectedFavorite);
+    const selectedTeamObj = teams.find(t => t.name === selectedFavorite);
     const token = localStorage.getItem('token');
 
     try {
@@ -201,28 +204,46 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
           <div className="flex flex-col gap-4">
             <h2 className="text-2xl font-bold text-center">Favorite Teams</h2>
 
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 max-h-[250px] overflow-y-auto pr-2">
-              {FAVORITE_TEAMS_DATABASE.map((team) => {
-                const isSelected = selectedFavorite === team.name;
-                return (
-                  <div 
-                    key={team.name}
-                    onClick={() => handleSelectTeam(team.name)}
-                    className={`p-3 rounded-2xl flex flex-col items-center gap-2 border cursor-pointer transition ${
-                      isSelected 
-                        ? 'bg-[#5c3be0] border-[#7351f5]' 
-                        : 'bg-[#181933] border-[#232549] hover:bg-[#1f2040]'
-                    }`}
-                  >
-                    {team.icon ? (
-                      <img src={team.icon} alt={team.name} className="w-8 h-8 object-contain select-none" />
-                    ) : (
-                      <div className="w-8 h-8 bg-[#232549] rounded-full flex items-center justify-center font-bold">?</div>
-                    )}
-                    <span className="text-[10px] font-bold text-center tracking-wide truncate w-full select-none">{team.name}</span>
-                  </div>
-                );
-              })}
+            <input 
+              type="text" 
+              placeholder="Search a team..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-[#181933] border border-[#232549] text-white rounded-xl px-4 py-2 text-xs outline-none focus:border-[#7351f5] placeholder-slate-500 w-full"
+            />
+
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 max-h-[180px] overflow-y-auto pr-2 custom-scrollbar">
+              {loading ? (
+                <div className="col-span-full py-8 text-center text-slate-400 font-semibold animate-pulse text-xs">
+                  Loading teams...
+                </div>
+              ) : teams.filter(t => t.name.toLowerCase().includes(searchQuery.toLowerCase())).length > 0 ? (
+                teams.filter(t => t.name.toLowerCase().includes(searchQuery.toLowerCase())).map((team) => {
+                  const isSelected = selectedFavorite === team.name;
+                  return (
+                    <div 
+                      key={team.id}
+                      onClick={() => handleSelectTeam(team.name)}
+                      className={`p-3 rounded-2xl flex flex-col items-center gap-2 border cursor-pointer transition ${
+                        isSelected 
+                          ? 'bg-[#5c3be0] border-[#7351f5]' 
+                          : 'bg-[#181933] border-[#232549] hover:bg-[#1f2040]'
+                      }`}
+                    >
+                      {team.logo ? (
+                        <img src={team.logo} alt={team.name} className="w-8 h-8 object-contain select-none" />
+                      ) : (
+                        <div className="w-8 h-8 bg-[#232549] rounded-full flex items-center justify-center font-bold text-[10px]">?</div>
+                      )}
+                      <span className="text-[10px] font-bold text-center tracking-wide truncate w-full select-none" title={team.name}>{team.name}</span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="col-span-full py-8 text-center text-slate-500 font-semibold text-xs">
+                  No matching teams found.
+                </div>
+              )}
             </div>
 
             <button 

@@ -16,7 +16,8 @@ const GAMES_DATABASE = [
       { name: 'First Stand', icon: '/logos/League of Legends/First_Stand.png' },
       { name: 'MSI', icon: '/logos/League of Legends/MSI.png' },
       { name: 'EMEA Masters', icon: '/logos/League of Legends/EMEA_Masters.png' },
-      { name: 'LFL', icon: '/logos/League of Legends/LFL.png' }
+      { name: 'LFL', icon: '/logos/League of Legends/LFL.png' },
+      { name: 'EWC', icon: '/logos/EWC.png' }
     ]
   },
   {
@@ -29,7 +30,8 @@ const GAMES_DATABASE = [
       { name: 'VCT Pacific', icon: '/logos/Valorant/VCT_Pacific.png' },
       { name: 'VCT CN', icon: '/logos/Valorant/VCT_CN.png' },
       { name: 'Valorant Champions', icon: '/logos/Valorant/Valorant_Champions.png' },
-      { name: 'VCT Masters', icon: '/logos/Valorant/VCT_Masters.png' }
+      { name: 'VCT Masters', icon: '/logos/Valorant/VCT_Masters.png' },
+      { name: 'EWC', icon: '/logos/EWC.png' }
     ]
   },
   {
@@ -40,7 +42,8 @@ const GAMES_DATABASE = [
       { name: 'PGL', icon: '/logos/CSGO/PGL.png' },
       { name: 'IEM', icon: '/logos/CSGO/IEM.png' },
       { name: 'ESL', icon: '/logos/CSGO/ESL.png' },
-      { name: 'Blast', icon: '/logos/CSGO/Blast.png' }
+      { name: 'Blast', icon: '/logos/CSGO/Blast.png' },
+      { name: 'EWC', icon: '/logos/EWC.png' }
     ]
   },
   {
@@ -51,7 +54,8 @@ const GAMES_DATABASE = [
       { name: 'The International', icon: '/logos/Dota 2/The_International.png' },
       { name: 'Dream League', icon: '/logos/Dota 2/Dream_League.png' },
       { name: 'ESL One', icon: '/logos/Dota 2/ESL_One.png' },
-      { name: 'PGL Wallachia', icon: '/logos/Dota 2/PGL_Wallachia.png' }
+      { name: 'PGL Wallachia', icon: '/logos/Dota 2/PGL_Wallachia.png' },
+      { name: 'EWC', icon: '/logos/EWC.png' }
     ]
   },
   {
@@ -65,7 +69,8 @@ const GAMES_DATABASE = [
       { name: 'CN League', icon: '/logos/Rainbow 6 Siege/CN_League.png' },
       { name: 'AP League', icon: '/logos/Rainbow 6 Siege/AP_League.png' },
       { name: 'Six Invitational', icon: '/logos/Rainbow 6 Siege/Six_Invitational.png' },
-      { name: 'Six Major', icon: '/logos/Rainbow 6 Siege/Six_Major.png' }
+      { name: 'Six Major', icon: '/logos/Rainbow 6 Siege/Six_Major.png' },
+      { name: 'EWC', icon: '/logos/EWC.png' }
     ]
   }
 ];
