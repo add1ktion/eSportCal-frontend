@@ -78,7 +78,7 @@ function FavoriteTeamModal({ user, onUpdateUser, onClose, triggerAlert }) {
     >
       <div 
         onClick={(e) => e.stopPropagation()} 
-        className="bg-[#111226] border border-[#232549] rounded-3xl p-8 max-w-2xl w-full shadow-2xl relative my-8 cursor-default"
+        className="bg-[#111226] border border-[#232549] rounded-3xl p-8 max-w-4xl w-full shadow-2xl relative my-8 cursor-default"
       >
         <button 
           onClick={onClose} 
@@ -102,7 +102,7 @@ function FavoriteTeamModal({ user, onUpdateUser, onClose, triggerAlert }) {
               className="bg-[#181933] border border-[#232549] text-white rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#7351f5] placeholder-slate-500 w-full"
             />
 
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar my-2">
+            <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar my-2">
               {loading ? (
                 <div className="col-span-full py-12 text-center text-slate-400 font-semibold animate-pulse text-xs">
                   Loading teams from database...
