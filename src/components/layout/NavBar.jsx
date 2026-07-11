@@ -21,7 +21,7 @@ function Navbar({ isLoggedIn, onOpenLogin, onOpenRegister, onLogout, onOpenSetti
           <>
             <button
               onClick={onOpenSettings}
-              className="px-6 py-2 bg-[#3b1d98] hover:bg-[#2d1282] rounded-xl font-bold text-white shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer text-sm"
+              className="px-6 py-2 bg-[#3b1d98] hover:bg-[#2d1282] rounded-xl font-bold text-white shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
               title="My eSportCal Account Settings"
             >
               My eSportCal

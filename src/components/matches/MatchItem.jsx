@@ -50,7 +50,7 @@ const MatchItem = ({ match, isExpanded, onToggleExpand }) => {
         <div className="flex items-center justify-end gap-4 overflow-hidden">
           <span className="font-extrabold text-sm sm:text-base tracking-wide truncate">{teamA.name}</span>
           {getTeamLogo(teamA) ? (
-            <img src={getTeamLogo(teamA)} alt={teamA.name} className="w-10 h-10 object-contain flex-shrink-0" />
+            <img src={getTeamLogo(teamA)} alt={teamA.name} className="w-10 h-10 object-contain flex-shrink-0 team-logo-glow" />
           ) : (
             <div className="w-10 h-10 bg-[#232549] rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xs">?</div>
           )}
@@ -105,7 +105,7 @@ const MatchItem = ({ match, isExpanded, onToggleExpand }) => {
         {/* Team B (Left-aligned) */}
         <div className="flex items-center justify-start gap-4 overflow-hidden">
           {getTeamLogo(teamB) ? (
-            <img src={getTeamLogo(teamB)} alt={teamB.name} className="w-10 h-10 object-contain flex-shrink-0" />
+            <img src={getTeamLogo(teamB)} alt={teamB.name} className="w-10 h-10 object-contain flex-shrink-0 team-logo-glow" />
           ) : (
             <div className="w-10 h-10 bg-[#232549] rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xs">?</div>
           )}

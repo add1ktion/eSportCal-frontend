@@ -231,7 +231,7 @@ function UserSettings({ user, onUpdateUser, onClose, onDeleteAccount, triggerAle
                       }`}
                     >
                       {team.logo ? (
-                        <img src={team.logo} alt={team.name} className="w-8 h-8 object-contain select-none" />
+                        <img src={team.logo} alt={team.name} className="w-8 h-8 object-contain select-none team-logo-glow" />
                       ) : (
                         <div className="w-8 h-8 bg-[#232549] rounded-full flex items-center justify-center font-bold text-[10px]">?</div>
                       )}
