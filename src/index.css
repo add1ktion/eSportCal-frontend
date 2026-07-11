@@ -44,3 +44,11 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #5c3be0; /* eSportCal purple accent on hover */
 }
+
+/* 
+  ✨ TEAM LOGO GLOW FILTER
+  Adds a soft white outline/halo to team logo images to ensure legibility on dark backgrounds.
+*/
+.team-logo-glow {
+  filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.75));
+}

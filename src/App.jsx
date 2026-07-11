@@ -14,6 +14,7 @@ import SidebarFilter from './components/layout/SideBarFilter';
 import Footer from './components/layout/Footer';
 import AuthModal from './components/auth/AuthModal';
 import UserSettings from './components/auth/UserSettings';
+import FavoriteTeamModal from './components/auth/FavoriteTeamModal';
 import AlertModal from './components/common/AlertModal';
 import AboutUsModal from './components/common/AboutUsModal';
 import ContactModal from './components/common/ContactModal';
@@ -35,18 +36,7 @@ const GAME_SLUG_MAP = {
   'rainbow-six-siege': 'r6'
 };
 
-const FAVORITE_TEAMS_MAP = {
-  128268: 'Karmine Corp',
-  3201: 'Fnatic',
-  3210: 'G2 Esports',
-  136005: 'GiantX',
-  137078: 'MKOI',
-  3214: 'Natus Vincere',
-  138612: 'Shifters',
-  3212: 'SK Gaming',
-  132212: 'Team Heretics',
-  3213: 'Vitality'
-};
+
 
 // ⚙️ DEFINITIVE MAJOR LEAGUES DATABASE (Used for precise filtering)
 const MAJOR_LEAGUES = {
@@ -63,6 +53,7 @@ function App() {
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'register' | 'forgot-password' | 'reset-password'
   const [resetToken, setResetToken] = useState('');
   const [showSettings, setShowSettings] = useState(false);
+  const [showFavoritesModal, setShowFavoritesModal] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [matches, setMatches] = useState([]);
@@ -151,8 +142,7 @@ function App() {
       });
       const dbFavorites = res.data.favorites;
       if (dbFavorites && dbFavorites.length > 0) {
-        const savedTeamId = dbFavorites[0].pandascore_team_id;
-        const savedTeamName = FAVORITE_TEAMS_MAP[savedTeamId] || 'Karmine Corp';
+        const savedTeamName = dbFavorites[0].team_name || '';
         
         setUser(prev => ({
           ...prev,
@@ -244,21 +234,8 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Filter matches based on sidebar filters
-  const filteredMatches = matches.filter(match => {
-    if (activeFilter === 'Upcoming' && match.status !== 'not_started') return false;
-    if (activeFilter === 'Finished' && match.status !== 'finished') return false;
-    if (activeFilter === 'Live' && match.status !== 'running') return false;
-
-    if (activeFilter !== 'Live') {
-      const matchDate = new Date(match.scheduled_at);
-      const isInWeek = isWithinInterval(matchDate, {
-        start: currentWeekStart,
-        end: currentWeekEnd
-      });
-      if (!isInWeek) return false;
-    }
-
+  // Helper to determine if a match passes active sidebar filters (game & league)
+  const isMatchPassedFilters = (match) => {
     const rawGame = match.game_slug || match.game_name;
     const gameId = GAME_SLUG_MAP[rawGame?.toLowerCase()];
     if (!gameId) return false;
@@ -320,11 +297,39 @@ function App() {
     }
 
     return true;
+  };
+
+  // Filter matches based on sidebar filters
+  const filteredMatches = matches.filter(match => {
+    if (activeFilter === 'Upcoming' && match.status !== 'not_started') return false;
+    if (activeFilter === 'Finished' && match.status !== 'finished') return false;
+    if (activeFilter === 'Live' && match.status !== 'running') return false;
+
+    if (activeFilter !== 'Live') {
+      const matchDate = new Date(match.scheduled_at);
+      const isInWeek = isWithinInterval(matchDate, {
+        start: currentWeekStart,
+        end: currentWeekEnd
+      });
+      if (!isInWeek) return false;
+    }
+
+    return isMatchPassedFilters(match);
   });
 
-  // Filter matches for the favorite team feed (not bound to the selected week)
+  // Filter matches for the favorite team feed (bound to the selected week)
   const favoriteMatches = matches.filter(match => {
-    return match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()));
+    const isFavoriteTeam = match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()));
+    if (!isFavoriteTeam) return false;
+
+    const matchDate = new Date(match.scheduled_at);
+    const isInWeek = isWithinInterval(matchDate, {
+      start: currentWeekStart,
+      end: currentWeekEnd
+    });
+    if (!isInWeek) return false;
+
+    return isMatchPassedFilters(match);
   });
 
   const handleFilterChange = (gameId, updatedLeagues) => {
@@ -406,6 +411,7 @@ function App() {
         onOpenRegister={() => { setAuthModalMode('register'); setShowAuthModal(true); }}
         onLogout={handleLogout}
         onOpenSettings={() => setShowSettings(true)} 
+        onOpenFavorites={() => setShowFavoritesModal(true)} 
       />
 
       {/* Main Container */}
@@ -497,12 +503,21 @@ function App() {
       {showSettings && (
         <UserSettings 
           user={user}
+          onClose={() => setShowSettings(false)} 
+          onDeleteAccount={handleDeleteAccount}
+          triggerAlert={triggerAlert}
+        />
+      )}
+
+      {/* Favorite Team Selection */}
+      {showFavoritesModal && (
+        <FavoriteTeamModal
+          user={user}
           onUpdateUser={(updatedUser) => {
             setUser(updatedUser);
             localStorage.setItem('user', JSON.stringify(updatedUser));
           }}
-          onClose={() => setShowSettings(false)} 
-          onDeleteAccount={handleDeleteAccount}
+          onClose={() => setShowFavoritesModal(false)}
           triggerAlert={triggerAlert}
         />
       )}
