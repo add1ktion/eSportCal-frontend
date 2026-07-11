@@ -234,21 +234,8 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Filter matches based on sidebar filters
-  const filteredMatches = matches.filter(match => {
-    if (activeFilter === 'Upcoming' && match.status !== 'not_started') return false;
-    if (activeFilter === 'Finished' && match.status !== 'finished') return false;
-    if (activeFilter === 'Live' && match.status !== 'running') return false;
-
-    if (activeFilter !== 'Live') {
-      const matchDate = new Date(match.scheduled_at);
-      const isInWeek = isWithinInterval(matchDate, {
-        start: currentWeekStart,
-        end: currentWeekEnd
-      });
-      if (!isInWeek) return false;
-    }
-
+  // Helper to determine if a match passes active sidebar filters (game & league)
+  const isMatchPassedFilters = (match) => {
     const rawGame = match.game_slug || match.game_name;
     const gameId = GAME_SLUG_MAP[rawGame?.toLowerCase()];
     if (!gameId) return false;
@@ -310,11 +297,31 @@ function App() {
     }
 
     return true;
+  };
+
+  // Filter matches based on sidebar filters
+  const filteredMatches = matches.filter(match => {
+    if (activeFilter === 'Upcoming' && match.status !== 'not_started') return false;
+    if (activeFilter === 'Finished' && match.status !== 'finished') return false;
+    if (activeFilter === 'Live' && match.status !== 'running') return false;
+
+    if (activeFilter !== 'Live') {
+      const matchDate = new Date(match.scheduled_at);
+      const isInWeek = isWithinInterval(matchDate, {
+        start: currentWeekStart,
+        end: currentWeekEnd
+      });
+      if (!isInWeek) return false;
+    }
+
+    return isMatchPassedFilters(match);
   });
 
   // Filter matches for the favorite team feed (not bound to the selected week)
   const favoriteMatches = matches.filter(match => {
-    return match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()));
+    const isFavoriteTeam = match.teams.some(team => team.name.toLowerCase().includes(user.favoriteTeam?.toLowerCase()));
+    if (!isFavoriteTeam) return false;
+    return isMatchPassedFilters(match);
   });
 
   const handleFilterChange = (gameId, updatedLeagues) => {
