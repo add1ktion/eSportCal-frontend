@@ -419,6 +419,34 @@ function App() {
         <SidebarFilter activeFilters={activeFilters} onFilterChange={handleFilterChange} />
 
         <div className="flex-1 flex flex-col gap-6">
+          {/* 📅 Global Weekly Navigation Bar (Option 2) */}
+          <div className="w-full flex items-center justify-between bg-[#111226] border border-[#232549] p-4 rounded-3xl shadow-xl select-none">
+            <span className="text-sm font-bold text-slate-300">Calendrier :</span>
+            <div className="flex items-center gap-4 bg-[#1c1d33] border border-[#232549] px-4 py-1.5 rounded-2xl shadow-inner">
+              <button 
+                onClick={handlePrevWeek} 
+                title="Previous Week"
+                className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
+              >
+                ◀
+              </button>
+              <span 
+                onClick={handleResetToCurrentWeek}
+                title="Reset to current week"
+                className="text-xs font-bold text-slate-200 cursor-pointer hover:text-white"
+              >
+                {formatWeekRange()}
+              </span>
+              <button 
+                onClick={handleNextWeek} 
+                title="Next Week"
+                className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
+              >
+                ▶
+              </button>
+            </div>
+          </div>
+
           {/* Favorite Team Feed */}
           {isLoggedIn && user.favoriteTeam && (
             <FavoriteTeams 
@@ -431,31 +459,6 @@ function App() {
           <main className="bg-[#111226] border border-[#232549] rounded-3xl p-6 flex flex-col gap-4 shadow-xl">
             <div className="border-b border-[#232549] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h1 className="text-3xl font-bold tracking-wide m-0">Matchs</h1>
-              
-              {/* 📅 Figma Style Weekly Navigation Bar */}
-              <div className="flex items-center gap-4 bg-[#1c1d33] border border-[#232549] px-4 py-1.5 rounded-2xl self-center sm:self-auto shadow-inner select-none">
-                <button 
-                  onClick={handlePrevWeek} 
-                  title="Previous Week"
-                  className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
-                >
-                  ◀
-                </button>
-                <span 
-                  onClick={handleResetToCurrentWeek}
-                  title="Reset to current week"
-                  className="text-xs font-bold text-slate-200 cursor-pointer hover:text-white"
-                >
-                  {formatWeekRange()}
-                </span>
-                <button 
-                  onClick={handleNextWeek} 
-                  title="Next Week"
-                  className="text-slate-400 hover:text-white transition font-black text-sm cursor-pointer hover:scale-125"
-                >
-                  ▶
-                </button>
-              </div>
 
               {/* Filter buttons */}
               <MatchFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
