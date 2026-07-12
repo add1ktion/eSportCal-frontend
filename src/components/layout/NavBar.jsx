@@ -1,6 +1,5 @@
 // frontend/src/components/Navbar.jsx
 import React from 'react';
-import { User } from 'lucide-react';
 
 /**
  * Navbar component.
