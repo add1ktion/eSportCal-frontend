@@ -433,31 +433,32 @@ function App() {
         <div className="flex-1 flex flex-col gap-6">
           {/* 📅 Global Weekly Navigation Bar (Option 2) */}
           <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#111226] border border-[#232549] p-4 rounded-3xl shadow-xl select-none">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-bold text-slate-300">Calendrier :</span>
-              <div className="flex items-center gap-3 bg-[#1c1d33] border border-[#232549] px-3 py-1.5 rounded-2xl shadow-inner">
-                <button 
-                  onClick={handlePrevWeek} 
-                  title="Semaine précédente"
-                  className="text-slate-400 hover:text-white transition font-black text-xs cursor-pointer hover:scale-125"
-                >
-                  ◀
-                </button>
-                <span 
-                  onClick={handleResetToCurrentWeek}
-                  title="Réinitialiser à la semaine actuelle"
-                  className="text-xs font-bold text-slate-200 cursor-pointer hover:text-white"
-                >
-                  {formatWeekRange()}
-                </span>
-                <button 
-                  onClick={handleNextWeek} 
-                  title="Semaine suivante"
-                  className="text-slate-400 hover:text-white transition font-black text-xs cursor-pointer hover:scale-125"
-                >
-                  ▶
-                </button>
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-slate-300 mr-2">Calendar:</span>
+              
+              <button 
+                onClick={handlePrevWeek} 
+                title="Previous week"
+                className="flex items-center justify-center w-10 h-[46px] rounded-xl border bg-[#1c1d33] border-[#232549] text-slate-400 hover:bg-[#232549] hover:text-white transition-all duration-200 cursor-pointer font-bold text-xs hover:scale-102"
+              >
+                ◀
+              </button>
+              
+              <button 
+                onClick={handleResetToCurrentWeek}
+                title="Reset to current week"
+                className="flex items-center justify-center px-4 h-[46px] rounded-xl border bg-[#1c1d33] border-[#232549] text-xs font-bold text-slate-200 hover:bg-[#232549] hover:text-white transition-all duration-200 cursor-pointer hover:scale-102"
+              >
+                {formatWeekRange()}
+              </button>
+
+              <button 
+                onClick={handleNextWeek} 
+                title="Next week"
+                className="flex items-center justify-center w-10 h-[46px] rounded-xl border bg-[#1c1d33] border-[#232549] text-slate-400 hover:bg-[#232549] hover:text-white transition-all duration-200 cursor-pointer font-bold text-xs hover:scale-102"
+              >
+                ▶
+              </button>
             </div>
 
             {/* 7 Days Daily Strip Navigation */}
@@ -466,18 +467,6 @@ function App() {
                 const isSelected = selectedDay && isSameDay(day, selectedDay);
                 const dayName = format(day, 'EEE'); // "Mon", "Tue"...
                 const dayNum = format(day, 'dd'); // "20", "21"...
-                
-                // Map EN day abbreviations to French to stay uniform
-                const dayNameFrMap = {
-                  'Mon': 'Lun',
-                  'Tue': 'Mar',
-                  'Wed': 'Mer',
-                  'Thu': 'Jeu',
-                  'Fri': 'Ven',
-                  'Sat': 'Sam',
-                  'Sun': 'Dim'
-                };
-                const dayLabel = dayNameFrMap[dayName] || dayName;
 
                 return (
                   <button
@@ -489,7 +478,7 @@ function App() {
                         : 'bg-[#1c1d33] border-[#232549] text-slate-400 hover:bg-[#232549] hover:text-white'
                     }`}
                   >
-                    <span className="text-[9px] uppercase font-bold tracking-wider select-none">{dayLabel}</span>
+                    <span className="text-[9px] uppercase font-bold tracking-wider select-none">{dayName}</span>
                     <span className="text-xs font-extrabold select-none mt-0.5">{dayNum}</span>
                   </button>
                 );
