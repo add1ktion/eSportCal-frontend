@@ -77,8 +77,8 @@ const FavoriteTeams = ({ favoriteMatches, favoriteTeamName }) => {
       <div 
         className={`flex flex-col border border-[#232549]/50 rounded-2xl overflow-y-auto scrollbar-thin transition-all duration-300 ${
           expandedMatchId 
-            ? 'h-[600px]' 
-            : 'h-[360px]'
+            ? 'max-h-[600px]' 
+            : 'max-h-[290px]'
         }`}
       >
         {sortedFavMatches.length > 0 ? (
