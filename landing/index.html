@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="eSportCal - The ultimate zero-spoiler match schedule calendar and dashboard for esports fans.">
+    <title>eSportCal — Unified e-Sports Calendar & Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <span class="logo-accent">e</span>SportCal
+            </a>
+            <nav class="nav">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#about" class="nav-link">About Project</a>
+                <a href="https://www.esportcal.com" target="_blank" class="btn btn-primary btn-sm">Launch App</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <span class="hero-badge">Portfolio Project — Holberton School</span>
+            <h1 class="hero-title">The Unified, Zero-Spoiler <br><span class="text-gradient">e-Sports Calendar</span></h1>
+            <p class="hero-description">
+                Keep track of Tier-1 professional matches across League of Legends, Valorant, CS:GO, Dota 2, and R6. Localized timezones, embedded Twitch streams, and absolute spoiler protection in one premium dashboard.
+            </p>
+            <div class="hero-actions">
+                <a href="https://www.esportcal.com" target="_blank" class="btn btn-primary btn-lg">
+                    Launch Calendar <i data-lucide="external-link" class="icon-inline"></i>
+                </a>
+                <a href="https://github.com/add1ktion/eSportCal-frontend" target="_blank" class="btn btn-secondary btn-lg">
+                    Explore Code <i data-lucide="github" class="icon-inline"></i>
+                </a>
+            </div>
+            
+            <!-- Hero Mockup Window -->
+            <div class="mockup-window">
+                <div class="mockup-header">
+                    <div class="mockup-dots">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="mockup-address">www.esportcal.com</div>
+                </div>
+                <div class="mockup-body">
+                    <!-- Clean SVG Representation of the App layout -->
+                    <svg viewBox="0 0 1200 650" fill="none" xmlns="http://www.w3.org/2000/svg" class="mockup-svg">
+                        <rect width="1200" height="650" rx="8" fill="#0d0e15"/>
+                        <!-- Sidebar -->
+                        <rect x="0" y="0" width="220" height="650" fill="#131522"/>
+                        <circle cx="50" cy="50" r="15" fill="#a855f7"/>
+                        <rect x="80" y="42" width="100" height="16" rx="4" fill="#3b4260"/>
+                        <rect x="25" y="110" width="170" height="35" rx="6" fill="#1e2238"/>
+                        <rect x="25" y="160" width="170" height="35" rx="6" fill="#131522"/>
+                        <rect x="25" y="210" width="170" height="35" rx="6" fill="#131522"/>
+                        <rect x="25" y="260" width="170" height="35" rx="6" fill="#131522"/>
+                        <!-- Toolbar -->
+                        <rect x="220" y="0" width="980" height="80" fill="#131522"/>
+                        <rect x="250" y="22" width="150" height="35" rx="6" fill="#1e2238"/>
+                        <rect x="850" y="22" width="120" height="35" rx="6" fill="#a855f7"/>
+                        <rect x="990" y="22" width="150" height="35" rx="6" fill="#1e2238"/>
+                        <!-- Calendar Cards Grid -->
+                        <!-- Row 1 -->
+                        <rect x="250" y="110" width="430" height="150" rx="8" fill="#151726" stroke="#252a42" stroke-width="1"/>
+                        <circle cx="290" cy="185" r="22" fill="#ef4444"/>
+                        <circle cx="640" cy="185" r="22" fill="#3b82f6"/>
+                        <rect x="360" y="150" width="210" height="14" rx="3" fill="#3b4260"/>
+                        <rect x="420" y="180" width="90" height="35" rx="6" fill="#3b82f6"/>
+                        <!-- Row 2 -->
+                        <rect x="710" y="110" width="430" height="150" rx="8" fill="#151726" stroke="#252a42" stroke-width="1"/>
+                        <circle cx="750" cy="185" r="22" fill="#10b981"/>
+                        <circle cx="1100" cy="185" r="22" fill="#f59e0b"/>
+                        <rect x="820" y="150" width="210" height="14" rx="3" fill="#3b4260"/>
+                        <rect x="880" y="180" width="90" height="35" rx="6" fill="#a855f7"/>
+                        <!-- Row 3 -->
+                        <rect x="250" y="280" width="430" height="150" rx="8" fill="#151726" stroke="#252a42" stroke-width="1"/>
+                        <!-- Row 4 -->
+                        <rect x="710" y="280" width="430" height="150" rx="8" fill="#151726" stroke="#252a42" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="features-container">
+            <div class="section-header">
+                <span class="section-tag">Key Functionalities</span>
+                <h2 class="section-title">Built For True Esports Fans</h2>
+                <p class="section-subtitle">Tired of navigating dozens of slow wikis and getting spoiled. We built the calendar we always wanted.</p>
+            </div>
+
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i data-lucide="eye-off" class="feature-icon"></i>
+                    </div>
+                    <h3 class="feature-name">Zero-Spoiler Shield</h3>
+                    <p class="feature-desc">
+                        Can't watch the match live? No worries. All scores of completed matches are masked behind "Reveal" buttons by default to ensure absolute surprise when watching VODs.
+                    </p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i data-lucide="sliders-horizontal" class="feature-icon"></i>
+                    </div>
+                    <h3 class="feature-name">Multidirectional Filter</h3>
+                    <p class="feature-desc">
+                        Tailor the schedule in real-time. Combine filters for games (LoL, CS, Valorant, Dota, R6), active leagues, and team checkboxes. Preferences are cached locally in your browser.
+                    </p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i data-lucide="tv-2" class="feature-icon"></i>
+                    </div>
+                    <h3 class="feature-name">Live Streams & Timezones</h3>
+                    <p class="feature-desc">
+                        No more UTC calculations. All scheduled match times are automatically normalized to your browser's local timezone. Click a live match card to open an inline responsive Twitch player.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="about-container">
+            <div class="about-grid">
+                <div class="about-text">
+                    <span class="section-tag">Project Story</span>
+                    <h2 class="section-title">The Story Behind eSportCal</h2>
+                    <p class="about-story">
+                        As passionate gaming fans, we spent years jumping between liquipedia forums, HLTV, and streams just to know when our favorite teams were playing. We constantly got final scores spoiled before we could watch the replays. 
+                    </p>
+                    <p class="about-story">
+                        We decided to build **eSportCal** as our final Portfolio Project for **Holberton School**, creating a unified, high-performance portal that keeps match results secret until you choose to see them. Over a 6-week sprint, we designed a robust architecture caching real-time API schedules locally in a private database to offer ultra-fast navigation.
+                    </p>
+                    <div class="about-links">
+                        <a href="https://github.com/add1ktion/eSportCal-frontend" target="_blank" class="btn btn-secondary">
+                            Frontend Repo <i data-lucide="github" class="icon-inline"></i>
+                        </a>
+                        <a href="https://github.com/add1ktion/eSportCal-backend" target="_blank" class="btn btn-secondary">
+                            Backend Repo <i data-lucide="github" class="icon-inline"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="team-section">
+                    <h3 class="team-title">The Developers</h3>
+                    <div class="team-grid">
+                        <!-- Antoine -->
+                        <div class="team-card">
+                            <div class="team-avatar">A</div>
+                            <h4 class="team-name">Antoine</h4>
+                            <p class="team-role">Frontend & Integration Lead</p>
+                            <div class="team-socials">
+                                <a href="https://github.com/add1ktion" target="_blank" class="social-link"><i data-lucide="github"></i></a>
+                                <a href="https://www.linkedin.com" target="_blank" class="social-link"><i data-lucide="linkedin"></i></a>
+                                <a href="https://twitter.com" target="_blank" class="social-link"><i data-lucide="twitter"></i></a>
+                            </div>
+                        </div>
+                        <!-- Ilan -->
+                        <div class="team-card">
+                            <div class="team-avatar">I</div>
+                            <h4 class="team-name">Ilan</h4>
+                            <p class="team-role">Backend & Security Lead</p>
+                            <div class="team-socials">
+                                <a href="https://github.com" target="_blank" class="social-link"><i data-lucide="github"></i></a>
+                                <a href="https://www.linkedin.com" target="_blank" class="social-link"><i data-lucide="linkedin"></i></a>
+                                <a href="https://twitter.com" target="_blank" class="social-link"><i data-lucide="twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 eSportCal. Built with passion for gamers worldwide.</p>
+            <p class="footer-subtext">Portfolio project for <a href="https://www.holbertonschool.com" target="_blank" class="footer-link">Holberton School</a>.</p>
+        </div>
+    </footer>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
