@@ -44,6 +44,7 @@ body {
 .text-gradient {
     background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -117,14 +118,20 @@ body {
 }
 
 .logo {
-    font-size: 24px;
-    font-weight: 800;
+    font-size: 26px;
+    font-weight: normal;
     color: white;
     text-decoration: none;
+    letter-spacing: -0.5px;
 }
 
 .logo-accent {
     color: var(--accent-purple);
+    font-weight: normal;
+}
+
+.logo-main {
+    font-weight: 800;
 }
 
 .nav {

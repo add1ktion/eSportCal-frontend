@@ -19,7 +19,7 @@
     <header class="header">
         <div class="header-container">
             <a href="#" class="logo">
-                <span class="logo-accent">e</span>SportCal
+                <span class="logo-accent">e</span><span class="logo-main">SportCal</span>
             </a>
             <nav class="nav">
                 <a href="#features" class="nav-link">Features</a>
@@ -57,39 +57,68 @@
                     <div class="mockup-address">www.esportcal.com</div>
                 </div>
                 <div class="mockup-body">
-                    <!-- Clean SVG Representation of the App layout -->
-                    <svg viewBox="0 0 1200 650" fill="none" xmlns="http://www.w3.org/2000/svg" class="mockup-svg">
-                        <rect width="1200" height="650" rx="8" fill="#0d0e15"/>
-                        <!-- Sidebar -->
-                        <rect x="0" y="0" width="220" height="650" fill="#131522"/>
-                        <circle cx="50" cy="50" r="15" fill="#a855f7"/>
-                        <rect x="80" y="42" width="100" height="16" rx="4" fill="#3b4260"/>
-                        <rect x="25" y="110" width="170" height="35" rx="6" fill="#1e2238"/>
-                        <rect x="25" y="160" width="170" height="35" rx="6" fill="#131522"/>
-                        <rect x="25" y="210" width="170" height="35" rx="6" fill="#131522"/>
-                        <rect x="25" y="260" width="170" height="35" rx="6" fill="#131522"/>
-                        <!-- Toolbar -->
-                        <rect x="220" y="0" width="980" height="80" fill="#131522"/>
-                        <rect x="250" y="22" width="150" height="35" rx="6" fill="#1e2238"/>
-                        <rect x="850" y="22" width="120" height="35" rx="6" fill="#a855f7"/>
-                        <rect x="990" y="22" width="150" height="35" rx="6" fill="#1e2238"/>
-                        <!-- Calendar Cards Grid -->
-                        <!-- Row 1 -->
-                        <rect x="250" y="110" width="430" height="150" rx="8" fill="#151726" stroke="#252a42" stroke-width="1"/>
-                        <circle cx="290" cy="185" r="22" fill="#ef4444"/>
-                        <circle cx="640" cy="185" r="22" fill="#3b82f6"/>
-                        <rect x="360" y="150" width="210" height="14" rx="3" fill="#3b4260"/>
-                        <rect x="420" y="180" width="90" height="35" rx="6" fill="#3b82f6"/>
-                        <!-- Row 2 -->
-                        <rect x="710" y="110" width="430" height="150" rx="8" fill="#151726" stroke="#252a42" stroke-width="1"/>
-                        <circle cx="750" cy="185" r="22" fill="#10b981"/>
-                        <circle cx="1100" cy="185" r="22" fill="#f59e0b"/>
-                        <rect x="820" y="150" width="210" height="14" rx="3" fill="#3b4260"/>
-                        <rect x="880" y="180" width="90" height="35" rx="6" fill="#a855f7"/>
-                        <!-- Row 3 -->
-                        <rect x="250" y="280" width="430" height="150" rx="8" fill="#151726" stroke="#252a42" stroke-width="1"/>
-                        <!-- Row 4 -->
-                        <rect x="710" y="280" width="430" height="150" rx="8" fill="#151726" stroke="#252a42" stroke-width="1"/>
+                    <!-- High-fidelity SVG matching actual purple eSportCal dashboard layout -->
+                    <svg viewBox="0 0 1200 680" fill="none" xmlns="http://www.w3.org/2000/svg" class="mockup-svg">
+                        <!-- App background -->
+                        <rect width="1200" height="680" rx="8" fill="#090a15"/>
+                        
+                        <!-- Purple Header (Navbar) -->
+                        <rect x="0" y="0" width="1200" height="70" rx="0" fill="#5c3be0"/>
+                        <!-- Logo -->
+                        <text x="35" y="44" fill="#a855f7" font-family="'Outfit', sans-serif" font-size="24" font-weight="normal">e</text>
+                        <text x="47" y="44" fill="#ffffff" font-family="'Outfit', sans-serif" font-size="24" font-weight="bold">SportCal</text>
+                        
+                        <!-- Nav Buttons -->
+                        <rect x="920" y="18" width="115" height="34" rx="10" fill="#3b1d98"/>
+                        <rect x="1050" y="18" width="115" height="34" rx="10" fill="#10b981"/>
+                        
+                        <!-- Sidebar Filter Panel -->
+                        <rect x="35" y="95" width="260" height="550" rx="24" fill="#111226" stroke="#232549" stroke-width="1.5"/>
+                        <rect x="60" y="130" width="120" height="20" rx="4" fill="#2c2e55"/>
+                        <!-- Game Checkboxes -->
+                        <rect x="60" y="180" width="16" height="16" rx="4" fill="#5c3be0"/>
+                        <rect x="90" y="182" width="150" height="12" rx="3" fill="#2c2e55"/>
+                        
+                        <rect x="60" y="215" width="16" height="16" rx="4" fill="#5c3be0"/>
+                        <rect x="90" y="217" width="120" height="12" rx="3" fill="#2c2e55"/>
+                        
+                        <rect x="60" y="250" width="16" height="16" rx="4" fill="#5c3be0"/>
+                        <rect x="90" y="252" width="135" height="12" rx="3" fill="#2c2e55"/>
+                        
+                        <!-- Calendar Toolbar -->
+                        <rect x="320" y="95" width="845" height="65" rx="20" fill="#111226" stroke="#232549" stroke-width="1.5"/>
+                        <!-- Week navigation buttons -->
+                        <rect x="340" y="110" width="35" height="35" rx="8" fill="#1c1d33" stroke="#232549"/>
+                        <rect x="385" y="110" width="180" height="35" rx="8" fill="#1c1d33" stroke="#232549"/>
+                        <rect x="575" y="110" width="35" height="35" rx="8" fill="#1c1d33" stroke="#232549"/>
+                        
+                        <!-- Daily strip navigation items -->
+                        <rect x="830" y="110" width="40" height="35" rx="8" fill="#5c3be0"/>
+                        <rect x="880" y="110" width="40" height="35" rx="8" fill="#1c1d33" stroke="#232549"/>
+                        <rect x="930" y="110" width="40" height="35" rx="8" fill="#1c1d33" stroke="#232549"/>
+                        <rect x="980" y="110" width="40" height="35" rx="8" fill="#1c1d33" stroke="#232549"/>
+                        <rect x="1030" y="110" width="40" height="35" rx="8" fill="#1c1d33" stroke="#232549"/>
+                        
+                        <!-- Grid Match Cards -->
+                        <!-- Row 1 Left -->
+                        <rect x="320" y="185" width="410" height="140" rx="16" fill="#111226" stroke="#232549" stroke-width="1.5"/>
+                        <circle cx="365" cy="255" r="22" fill="#ef4444"/>
+                        <circle cx="685" cy="255" r="22" fill="#3b82f6"/>
+                        <rect x="420" y="215" width="210" height="12" rx="3" fill="#2c2e55"/>
+                        <rect x="475" y="245" width="100" height="34" rx="10" fill="#3b82f6"/>
+                        
+                        <!-- Row 1 Right -->
+                        <rect x="755" y="185" width="410" height="140" rx="16" fill="#111226" stroke="#232549" stroke-width="1.5"/>
+                        <circle cx="800" cy="255" r="22" fill="#10b981"/>
+                        <circle cx="1120" cy="255" r="22" fill="#f59e0b"/>
+                        <rect x="855" y="215" width="210" height="12" rx="3" fill="#2c2e55"/>
+                        <rect x="910" y="245" width="100" height="34" rx="10" fill="#5c3be0"/>
+                        
+                        <!-- Row 2 Left -->
+                        <rect x="320" y="345" width="410" height="140" rx="16" fill="#111226" stroke="#232549" stroke-width="1.5"/>
+                        
+                        <!-- Row 2 Right -->
+                        <rect x="755" y="345" width="410" height="140" rx="16" fill="#111226" stroke="#232549" stroke-width="1.5"/>
                     </svg>
                 </div>
             </div>
