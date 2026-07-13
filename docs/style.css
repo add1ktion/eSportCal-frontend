@@ -120,19 +120,10 @@ body {
 
 .logo {
     font-size: 26px;
-    font-weight: normal;
+    font-weight: 800;
     color: white;
     text-decoration: none;
     letter-spacing: -0.5px;
-}
-
-.logo-accent {
-    color: white;
-    font-weight: normal;
-}
-
-.logo-main {
-    font-weight: 800;
 }
 
 .nav {
