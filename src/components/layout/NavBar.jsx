@@ -11,9 +11,10 @@ import React from 'react';
 function Navbar({ isLoggedIn, onOpenLogin, onOpenRegister, onLogout, onOpenSettings, onOpenFavorites }) {
   return (
     <header className="w-full bg-[#5c3be0] py-4 px-12 flex items-center justify-between shadow-lg rounded-b-3xl border-b border-[#7351f5]/30">
-      <span className="text-2xl font-bold tracking-wide text-white select-none">
-        eSportCal
-      </span>
+      <div className="flex items-center gap-3 text-2xl font-bold tracking-wide text-white select-none">
+        <img src="/eSportCal.svg" alt="eSportCal logo" className="h-8 w-auto object-contain" />
+        <span>eSportCal</span>
+      </div>
       
       <div className="flex items-center gap-4">
         {isLoggedIn ? (

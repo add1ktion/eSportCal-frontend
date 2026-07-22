@@ -124,6 +124,14 @@ body {
     color: white;
     text-decoration: none;
     letter-spacing: -0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo img {
+    height: 32px;
+    width: auto;
 }
 
 .nav {
